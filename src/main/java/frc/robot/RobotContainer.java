@@ -134,12 +134,11 @@ public class RobotContainer {
       // DriverStation.reportError(arm.getMeasurement()  +"", false);
     }
   
-    public static void Test_controller() {
+    /*public static void Test_controller() {
       double potato = m_driverController.getLeftX();
       int i = 1;
       while (i < 5) {
         System.out.println(potato);
         i++;
-      }
+      }*/
   }
-}
