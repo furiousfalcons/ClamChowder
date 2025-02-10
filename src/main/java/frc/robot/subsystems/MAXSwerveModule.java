@@ -7,6 +7,7 @@ package frc.robot.subsystems;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.PowerDistribution.ModuleType;
 
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkMax;
@@ -14,14 +15,22 @@ import com.revrobotics.spark.SparkBase.ControlType;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.ClosedLoopConfig;
+import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 
 import frc.robot.Configs;
+import frc.robot.Constants.ModuleConstants;
 
 public class MAXSwerveModule {
   private final SparkMax m_drivingSpark;
   private final SparkMax m_turningSpark;
+
+  SparkMaxConfig turnConfig = new SparkMaxConfig();
+  SparkMaxConfig driveConfig = new SparkMaxConfig();
+  ClosedLoopConfig turn_ClosedLoopConfig = new ClosedLoopConfig();
+  ClosedLoopConfig drive_ClosedLoopConfig = new ClosedLoopConfig();
 
   private final RelativeEncoder m_drivingEncoder;
   private final AbsoluteEncoder m_turningEncoder;
@@ -42,11 +51,48 @@ public class MAXSwerveModule {
     m_drivingSpark = new SparkMax(drivingCANId, MotorType.kBrushless);
     m_turningSpark = new SparkMax(turningCANId, MotorType.kBrushless);
 
+   
+  
     m_drivingEncoder = m_drivingSpark.getEncoder();
     m_turningEncoder = m_turningSpark.getAbsoluteEncoder();
 
     m_drivingClosedLoopController = m_drivingSpark.getClosedLoopController();
     m_turningClosedLoopController = m_turningSpark.getClosedLoopController();
+
+    //Invert the turning encoder, since the output shaft rotates in the opposite direction of
+    // the steering motor in the MAXSwerve Module.
+
+    turnConfig.inverted(true);
+
+   // Enable PID wrap around for the turning motor. This will allow the PID
+    // controller to go through 0 to get to the setpoint i.e. going from 350 degrees
+    // to 10 degrees will go through 0 rather than the other direction which is a
+    // longer r
+    turn_ClosedLoopConfig.positionWrappingEnabled(true);
+    turn_ClosedLoopConfig.positionWrappingMinInput(ModuleConstants.kTurningEncoderPositionPIDMinInput);
+    turn_ClosedLoopConfig.positionWrappingMaxInput(ModuleConstants.kTurningEncoderPositionPIDMaxInput);
+
+    // Set the PID gains for the driving motor. Note these are example gains, and you
+    // may need to tune them for your own robot!
+
+    drive_ClosedLoopConfig.pidf(ModuleConstants.kDrivingP, ModuleConstants.kDrivingI, ModuleConstants.kDrivingD,
+     ModuleConstants.kDrivingFF);
+    drive_ClosedLoopConfig.outputRange(ModuleConstants.kDrivingMinOutput, ModuleConstants.kDrivingMaxOutput);
+
+    // Set the PID gains for the turning motor. Note these are example gains, and you
+    // may need to tune them for your own 
+
+    turn_ClosedLoopConfig.pidf(ModuleConstants.kTurningP, ModuleConstants.kTurningI, ModuleConstants.kTurningD,
+     ModuleConstants.kTurningFF);
+    turn_ClosedLoopConfig.outputRange(ModuleConstants.kTurningMinOutput, ModuleConstants.kTurningMaxOutput);
+
+    driveConfig.idleMode(ModuleConstants.kDrivingMotorIdleMode);
+    driveConfig.smartCurrentLimit(ModuleConstants.kDrivingMotorCurrentLimit);
+    turnConfig.idleMode(ModuleConstants.kTurningMotorIdleMode);
+    turnConfig.smartCurrentLimit(ModuleConstants.kTurningMotorCurrentLimit);
+
+    m_drivingSpark.configure(driveConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+    m_turningSpark.configure(turnConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
     // Apply the respective configurations to the SPARKS. Reset parameters before
     // applying the configuration to bring the SPARK to a known good state. Persist
