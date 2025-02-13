@@ -13,21 +13,21 @@ import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
-public class Intake extends SubsystemBase {
-    private NetworkTable tableInOut = NetworkTableInstance.getDefault().getTable("InOut");
-    private SparkMax inOutMotor; 
+public class InTakeOutPut extends SubsystemBase {
+    private NetworkTable tableInTakeOutPut = NetworkTableInstance.getDefault().getTable("InTakeOutPut");
+    private SparkMax intakeOutPutMotor; 
     private ColorSensorV3 colorSensor;
     private long time;
-    private boolean isIntaking;
-    private boolean isOutputing;
+    private boolean isInTaking;
+    private boolean isOutPutting;
     private I2C.Port i2cPort;
     int proximity;
 
-    public InOut() {
+    public InTakeOutPut() {
         i2cPort = I2C.Port.kOnboard;
         colorSensor = new ColorSensorV3(i2cPort);
         //work on the next line(WIP)
-        inOutMotor = new SparkMax()
+        intakeOutMotor = new SparkMax() = null; 
         time = System.currentTimeMillis();
 
     }
@@ -38,34 +38,34 @@ public class Intake extends SubsystemBase {
     }
 
     public void intake() {
-        isPickingUp = true;
-        inOutMotor.set( Constants.intakeMotorSpeed);
-        tableInOut.getEntry("InTake").setBoolean(true);
+        isInTaking = true;
+        intakeOutPutMotor.set( Constants.intakeMotorSpeed);
+        tableInTakeOutPut.getEntry("InTake").setBoolean(true);
     }
 
  }
 
- public void shoot() {
-    if (isIntaking){
-        isOutputing = true;
-        inOutMotor.set(-Constants.OutputMotorSpeed);
-        tableInOut.getEntry("Output").setBoolean(true);
+ public void OutPut() {
+    if (isInTaking){
+        isOutPutting = true;
+        intakeOutPutMotor.set(-Constants.OutputMotorSpeed);
+        tableInTakeOutPut.getEntry("Output").setBoolean(true);
     }
  }
 
  public void stop() {
     isOutputing = false;
     isIntaking = false;
-    inOutMotor.set(0.0);
-    tableInOut.getEntry("Out").setBoolean(false);
-    tableInOut.getEntry("Intake").setBoolean(false)
+    intakeOutPutMotor.set(0.0);
+    tableInTakeOutPut.getEntry("OutPut").setBoolean(false);
+    tableInTakeOutPut.getEntry("InTake").setBoolean(false);
  }
 
- public boolean isCurrentlyInputing()
+ public boolean isCurrentlyInTaking()
  {
-    return isIntaking;
+    return isInTaking;
  }
- public boolean isCurrentlyOutputing()
+ public boolean isCurrentlyOutPuting()
  {
-    return isOutputing;
+    return isOutPutting;
  }

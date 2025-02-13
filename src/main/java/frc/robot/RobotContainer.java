@@ -36,9 +36,10 @@ import java.util.List;
 public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private InTakeOutPut intakeOutPut = new InTakeOutPut();
+
+  private final OutPut output = new OutPut(intakeOutPut);
  
-
-
   // The driver's controller
   PS4Controller m_driverController = new PS4Controller(OIConstants.kDriverControllerPort);
 
@@ -86,6 +87,7 @@ public class RobotContainer {
         .whileTrue(new RunCommand(
             () -> m_robotDrive.setX(),
             m_robotDrive));
+            
   }
 
   /**
