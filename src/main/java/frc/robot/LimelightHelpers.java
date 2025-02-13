@@ -7,8 +7,8 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.TimestampedDoubleArray;
-import frc.robot.LimelightHelpers.LimelightResults;
-import frc.robot.LimelightHelpers.PoseEstimate;
+import frc.robot.LimeLightHelpers.LimelightResults;
+import frc.robot.LimeLightHelpers.PoseEstimate;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -670,7 +670,7 @@ public class LimelightHelpers {
     }
 
     private static PoseEstimate getBotPoseEstimate(String limelightName, String entryName, boolean isMegaTag2) {
-        DoubleArrayEntry poseEntry = LimelightHelpers.getLimelightDoubleArrayEntry(limelightName, entryName);
+        DoubleArrayEntry poseEntry = LimeLightHelpers.getLimelightDoubleArrayEntry(limelightName, entryName);
         
         TimestampedDoubleArray tsValue = poseEntry.getAtomic();
         double[] poseArray = tsValue.value;
@@ -721,7 +721,7 @@ public class LimelightHelpers {
      * @return Array of RawFiducial objects containing detection details
      */
     public static RawFiducial[] getRawFiducials(String limelightName) {
-        var entry = LimelightHelpers.getLimelightNTTableEntry(limelightName, "rawfiducials");
+        var entry = LimeLightHelpers.getLimelightNTTableEntry(limelightName, "rawfiducials");
         var rawFiducialArray = entry.getDoubleArray(new double[0]);
         int valsPerEntry = 7;
         if (rawFiducialArray.length % valsPerEntry != 0) {
@@ -754,7 +754,7 @@ public class LimelightHelpers {
      * @return Array of RawDetection objects containing detection details
      */
     public static RawDetection[] getRawDetections(String limelightName) {
-        var entry = LimelightHelpers.getLimelightNTTableEntry(limelightName, "rawdetections");
+        var entry = LimeLightHelpers.getLimelightNTTableEntry(limelightName, "rawdetections");
         var rawDetectionArray = entry.getDoubleArray(new double[0]);
         int valsPerEntry = 12;
         if (rawDetectionArray.length % valsPerEntry != 0) {
@@ -1566,7 +1566,7 @@ public class LimelightHelpers {
     public static LimelightResults getLatestResults(String limelightName) {
 
         long start = System.nanoTime();
-        LimelightHelpers.LimelightResults results = new LimelightHelpers.LimelightResults();
+        LimeLightHelpers.LimelightResults results = new LimeLightHelpers.LimelightResults();
         if (mapper == null) {
             mapper = new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         }
@@ -1587,3 +1587,4 @@ public class LimelightHelpers {
         return results;
     }
 }
+
