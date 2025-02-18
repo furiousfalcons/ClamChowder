@@ -39,7 +39,8 @@ public class RobotContainer {
 
 
   // The driver's controller
-  static XboxController m_driverController = new XboxController(OIConstants.kDriverControllerPort);
+  static XboxController m_driverController1 = new XboxController(OIConstants.kDriverControllerPort);
+  static XboxController m_driverController2 = new XboxController(OIConstants.kDriverControllerPort1);
   
     /**
      * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -56,11 +57,13 @@ public class RobotContainer {
           new RunCommand(
               
               () -> m_robotDrive.drive(
-                  -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
-                  -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-                  -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
-                  true),
+                  -MathUtil.applyDeadband(m_driverController1.getLeftY(), OIConstants.kDriveDeadband),
+                  -MathUtil.applyDeadband(m_driverController1.getLeftX(), OIConstants.kDriveDeadband),
+                  -MathUtil.applyDeadband(m_driverController1.getRightX(), OIConstants.kDriveDeadband),
+                  true, true),
               m_robotDrive));
+              new JoystickButton(m_driverController1, Button.kR1.value)
+              .whileTrue(new RunCommand( () -> m_robotDrive.setX(), m_robotDrive));
     }
   
     /**
@@ -81,8 +84,7 @@ public class RobotContainer {
       armDownButton.whileTrue(armDown);
       inTakeButton.whileTrue(inTake);
       shootButton.whileTrue(shoot);*/
-      new JoystickButton(m_driverController, Button.kR1.value)
-          .whileTrue(new RunCommand( () -> m_robotDrive.setX(), m_robotDrive));
+
     }
   
     /**
