@@ -32,6 +32,7 @@ public final class Constants {
   public static final double intakeMotorSpeed = .75; 
   public static final double MotorSpeed = .75;
 public static final int OutputMotorSpeed = 0;
+public static final int INTAKEOUTPUT_MOTOR_ID = 0;
 
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of

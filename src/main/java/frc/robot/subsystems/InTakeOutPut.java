@@ -1,4 +1,4 @@
-package frc.robot;
+package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
@@ -27,12 +27,10 @@ public class InTakeOutPut {
         i2cPort = I2C.Port.kOnboard;
         colorSensor = new ColorSensorV3(i2cPort);
         //work on the next line(WIP)
-        intakeOutPutMotor = new SparkMax(Contansnts.INTAKEOUTPUT_MOTOR_ID, MotorType.kBrushless) = null; 
+        intakeOutPutMotor = new SparkMax(Constants.INTAKEOUTPUT_MOTOR_ID, MotorType.kBrushless); 
         time = System.currentTimeMillis();
-
     }
 
-    @Override
     public void periodic() {
         proximity = colorSensor.getProximity();
     }
