@@ -21,6 +21,8 @@ import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.Elevator;
+import frc.robot.commands.Elevate;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -37,7 +39,9 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
  
+  private  Elevator elev = new Elevator();
 
+  private final Elevate elevate = new Elevate(elev);
 
   // The driver's controller
   PS4Controller m_driverController = new PS4Controller(OIConstants.kDriverControllerPort);
@@ -76,11 +80,11 @@ public class RobotContainer {
   private void configureButtonBindings() {
     /*JoystickButton climbUpButton = new JoystickButton(m_driverController, 1);
     JoystickButton armDownButton = new JoystickButton(m_driverController, 2);
-    JoystickButton inTakeButton = new JoystickButton(m_driverController, 3);
+    JoystickButton elevatorButton = new JoystickButton(m_driverController, 3);
     JoystickButton shootButton = new JoystickButton(m_driverController, 4);
     climbUpButton.whileTrue(climbUp);
     armDownButton.whileTrue(armDown);
-    inTakeButton.whileTrue(inTake);
+    elevatorButton.whileTrue(elevate);
     shootButton.whileTrue(shoot);*/
     new JoystickButton(m_driverController, Button.kR1.value)
         .whileTrue(new RunCommand(
