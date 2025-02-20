@@ -52,7 +52,7 @@ public class Arm{
         armMotorL.setCANTimeout(250);
         armMotorR.setCANTimeout(250);
 
-        getController().setTolerance(10);
+        // getController().setTolerance(10);
 
         armMotorL.setCANTimeout(250);
         armMotorR.setCANTimeout(250);
