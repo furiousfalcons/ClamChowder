@@ -92,14 +92,14 @@ public class RobotContainer {
      * {@link JoystickButton}.
      */
     private void configureButtonBindings() {
-      JoystickButton armUpButton = new JoystickButton(m_driverController2, 4);
-      JoystickButton armDownButton = new JoystickButton(m_driverController2, 1);
-      JoystickButton inTakeButton = new JoystickButton(m_driverController2, 5);
-      JoystickButton shootButton = new JoystickButton(m_driverController2, 6);
-      JoystickButton elevatorButton = new JoystickButton(m_driverController2, 2);
-      armUpButton.whileTrue(armUp);
-      armDownButton.whileTrue(armDown);
-      elevatorButton.whileTrue(elevator_Up);
+      // JoystickButton armUpButton = new JoystickButton(m_driverController2, 4);
+      // JoystickButton armDownButton = new JoystickButton(m_driverController2, 1);
+      // JoystickButton inTakeButton = new JoystickButton(m_driverController2, 5);
+      // JoystickButton shootButton = new JoystickButton(m_driverController2, 6);
+      // JoystickButton elevatorButton = new JoystickButton(m_driverController2, 2);
+      // armUpButton.whileTrue(armUp);
+      // armDownButton.whileTrue(armDown);
+      // elevatorButton.whileTrue(elevator_Up);
       // inTakeButton.whileTrue(inTake);
       // shootButton.whileTrue(shoot);
 

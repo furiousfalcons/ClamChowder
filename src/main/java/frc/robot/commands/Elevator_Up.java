@@ -8,10 +8,10 @@ public class Elevator_Up extends Command {
 
     Elevator lift;
     /** Creates a new ArmUp. */
-    public Elevator_Up(Elevator subsytem) {
+    public Elevator_Up(Elevator subsystem) {
       // Use addRequirements() here to declare subsystem dependencies.
-      lift = subsytem;
-      addRequirements(subsytem);
+      lift = subsystem;
+      addRequirements(subsystem);
     }
 
  // Called when the command is initially scheduled.
@@ -35,6 +35,4 @@ public void end(boolean interrupted) {}
 public boolean isFinished() {
 return false;
 }
-}
-
 }

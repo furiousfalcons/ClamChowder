@@ -8,10 +8,10 @@ public class Up_Arm extends Command {
 
         Arm arm;
         /** Creates a new ArmUp. */
-        public Up_Arm(Arm subsytem) {
+        public Up_Arm(Arm subsystem) {
           // Use addRequirements() here to declare subsystem dependencies.
-          arm = subsytem;
-          addRequirements(subsytem);
+          arm = subsystem;
+          addRequirements(subsystem);
         }
 
      // Called when the command is initially scheduled.
@@ -35,6 +35,4 @@ public class Up_Arm extends Command {
   public boolean isFinished() {
     return false;
   }
-}
-
 }

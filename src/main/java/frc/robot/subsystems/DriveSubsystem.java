@@ -134,30 +134,6 @@ public class DriveSubsystem extends SubsystemBase {
    *                      field.
    */
 
-
-  public static final double START_VALUE = 0.5;
-  private static final double END_VALUE = 1.0;
-  private static final int DURATION_MS = 3000;  // 3 seconds
-
-  public double processJoystickInput(double joystickInput) {
-          long startTime = System.nanoTime();
-          long endTime = startTime + (DURATION_MS * 1_000_000L); // Convert ms to ns
-          double value = START_VALUE;
-          long intervals = (endTime - startTime)/30;
-          long printTime = intervals + System.nanoTime();
-
-          while (System.nanoTime() < endTime) {
-              if(System.nanoTime() == printTime){
-              double progress = (System.nanoTime() - startTime) / (double) (DURATION_MS * 1_000_000L);
-              value = START_VALUE + progress * (END_VALUE - START_VALUE);
-              printTime = intervals + System.nanoTime();
-              return value;
-              }
-          }
-
-          return END_VALUE;
-  }
-
   public void drive(double xSpeed, double ySpeed, double rot, boolean fieldRelative, boolean rateLimit) {
 
     double xSpeedCommanded;
