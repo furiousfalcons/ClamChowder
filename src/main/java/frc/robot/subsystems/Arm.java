@@ -1,10 +1,17 @@
 package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
+import edu.wpi.first.wpilibj2.command.PIDSubsystem;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.spark.config.ClosedLoopConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.SparkClosedLoopController;
+
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
@@ -15,79 +22,66 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
 import frc.robot.Constants;
 
-public class Arm extends ClosedLoopConfig {
+public class Arm extends SubsystemBase{
 
-    private SparkMax armMotorL, armMotorR;
+    private SparkMax armMotorL;
+    private SparkMax armMotorR;
     private DutyCycleEncoder armEncoder;
-    ClosedLoopConfig armClosedLoopConfig = new ClosedLoopConfig(); //Duty cycle encoder is just a absoulte encoder (Search it up to learn more, it's fascinating!)
-    /*Feed forward is not applicable here as brushless motors do not have a permant magnetic field 
-    which is needed by the feed forward field (We have to find an alternatice method*/
+    private final PIDController pidController;
 
-    //The are has is contolled by two motors working togather
-    public Arm() {
 
-        armClosedLoopConfig.p(0.11);
-        
-    //     //The arm cann not fully rotate so a enabling continuous input is uncessary 
-    //     armMotorL = new SparkMax(Constants.armMotorL, MotorType.kBrushless);
-    //     armMotorR = new SparkMax(Constants.armMotorR, MotorType.kBrushless);
-    //     armEncoder = new DutyCycleEncoder(Constants.armEncoder);
-    //     setSetpoint(getMeasurement());
-    //     armMotorL.restoreFactoryDefaults();
-    //     armMotorR.restoreFactoryDefaults();
-    //     getController().setTolerance(10);
-
-    //     armMotorL.setCANTimeout(250);
-    //     armMotorR.setCANTimeout(250);
-
-      
-    //     armMotorL.setSmartCurrentLimit(40);
-    //     armMotorR.setSmartCurrentLimit(40);
-        
-
-    //     armMotorL.setCANTimeout(250);
-    //     armMotorR.setCANTimeout(250);
-
-    //     armMotorL.burnFlash();
-    //     armMotorR.burnFlash();
+    public Arm(){
 
         
+
+        armMotorL = new SparkMax(Constants.armMotorL, MotorType.kBrushless);
+        armMotorR = new SparkMax(Constants.armMotorR, MotorType.kBrushless);
+        armEncoder = new DutyCycleEncoder(Constants.armEncoder);
+
+        pidController = new PIDController(0.011, 0.000, 0.000);
+        pidController.setTolerance(2.0);
+
+        SparkMaxConfig config = new SparkMaxConfig();
+        config.inverted(true);
+        config.idleMode(IdleMode.kBrake);
+        config.smartCurrentLimit(40);
+        config.closedLoop.pid(0.011, 0.0, 0.0);
+
+        armMotorL.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        armMotorR.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        
+        armMotorL.setCANTimeout(250);
+        armMotorR.setCANTimeout(250);
+
+        // getController().setTolerance(10);
+
+        armMotorL.setCANTimeout(250);
+        armMotorR.setCANTimeout(250);
+    }
+
+    public void armUp() { 
+        double distance = pidController.getSetpoint() - 2;
+        pidController.setSetpoint(Math.max(distance, 135) );
+
+    }
+
+    public void armDown() { 
+        double distance = pidController.getSetpoint() + 2;
+        
+        pidController.setSetpoint(Math.min(distance,270));
+
+    }
+
     
-    //      //Increase the size/range of the set point
-        
+    public double getMeasurement() {
+        return  armEncoder.get(); //rotations not position unfortnately :()
+    }
 
-        
-        
-        
-    // }
+    
+    protected void useOutput(double output, double setpoint) {
+        System.out.println(output);
+     }
 
-
-
-    // public void armUp() { //amp
-    //     double distance = getSetpoint() - 2;
-    //     setSetpoint(Math.max(distance, 135) );
-
-    // }
-
-    // public void armDown() { //intake
-    //     double distance = getSetpoint() + 2;
-        
-    //     setSetpoint(Math.min(distance,270));
-        
-    // }
-
-    // public double getMeasurement() {
-    //     return  armEncoder.getAbsolutePosition() * 360;
-    // }
-
-    // @Override
-    // protected void useOutput(double output, double setpoint) {
-    //    // armMotorR.set( -output);
-    //    // armMotorL.set(-output);
-    //   // System.out.println(armEncoder.getAbsolutePosition() * 360);
-    //    // System.out.println(setpoint);
-    //    System.out.println(output);
-    //    // System.out.println(setpoint - (armEncoder.getAbsolutePosition() * 360));
-    // }
+    
 }
-}
+

@@ -25,6 +25,8 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
 
+
+  public static final int ELEVATOR_MOTOR_ID = 22;
   public static final int armMotorL = 9;
   public static final int armMotorR = 10;
   public static final int inTakeMotor = 11;
