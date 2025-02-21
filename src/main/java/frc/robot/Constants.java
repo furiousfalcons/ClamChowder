@@ -25,7 +25,7 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
 
-
+  public static final int INTAKEOUTPUT_MOTOR_ID = 55;
   public static final int ELEVATOR_MOTOR_ID = 22;
   public static final int armMotorL = 9;
   public static final int armMotorR = 10;
@@ -61,15 +61,15 @@ public final class Constants {
     public static final double kBackRightChassisAngularOffset = Math.PI / 2;
 
     // SPARK MAX CAN IDs
-    public static final int kFrontLeftDrivingCanId = 4;
-    public static final int kRearLeftDrivingCanId = 8;
-    public static final int kFrontRightDrivingCanId = 2;
-    public static final int kRearRightDrivingCanId = 6;
+    public static final int kFrontLeftDrivingCanId = 6;
+    public static final int kRearLeftDrivingCanId = 2;
+    public static final int kFrontRightDrivingCanId = 1;
+    public static final int kRearRightDrivingCanId = 5;
 
-    public static final int kFrontLeftTurningCanId = 3;
-    public static final int kRearLeftTurningCanId = 7;
-    public static final int kFrontRightTurningCanId = 1;
-    public static final int kRearRightTurningCanId = 5;
+    public static final int kFrontLeftTurningCanId = 12;
+    public static final int kRearLeftTurningCanId = 3;
+    public static final int kFrontRightTurningCanId = 5;
+    public static final int kRearRightTurningCanId = 7;
 
     public static final boolean kGyroReversed = false;
   }
