@@ -138,7 +138,7 @@ public class DriveSubsystem extends SubsystemBase {
 
     double xSpeedCommanded;
     double ySpeedCommanded;
-    m_currentRotation = rot;
+    double m_currentRotation = rot;
       if (rateLimit) {
       // Convert XY to polar for rate limiting
       double inputTranslationDir = Math.atan2(ySpeed, xSpeed);
