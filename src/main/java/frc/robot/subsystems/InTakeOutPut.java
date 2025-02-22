@@ -14,8 +14,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class InTakeOutPut extends SubsystemBase{
-        private NetworkTable tableInTakeOutPut = NetworkTableInstance.getDefault().getTable("InTakeOutPut");
-    private SparkMax intakeOutPutMotor; 
+    private NetworkTable tableInTakeOutPut = NetworkTableInstance.getDefault().getTable("InTakeOutPut");
+    private SparkMax intakeOutPutMotor_1; 
+    private SparkMax intakeOutPutMotor_2;
     private ColorSensorV3 colorSensor;
     private long time;
     private boolean isInTaking;
@@ -27,7 +28,8 @@ public class InTakeOutPut extends SubsystemBase{
         i2cPort = I2C.Port.kOnboard;
         colorSensor = new ColorSensorV3(i2cPort);
         //work on the next line(WIP)
-        intakeOutPutMotor = new SparkMax(Constants.INTAKEOUTPUT_MOTOR_ID, MotorType.kBrushless); 
+        intakeOutPutMotor_1 = new SparkMax(Constants.INTAKEOUTPUT_MOTOR_ID_1, MotorType.kBrushless);
+        intakeOutPutMotor_2 = new SparkMax(Constants.INTAKEOUTPUT_MOTOR_ID_2, MotorType.kBrushless); 
         time = System.currentTimeMillis();
     }
 
@@ -37,14 +39,16 @@ public class InTakeOutPut extends SubsystemBase{
 
     public void intake() {
         isInTaking = true;
-        intakeOutPutMotor.set( Constants.inTakeMotorSpeed);
+        intakeOutPutMotor_1.set( Constants.inTakeMotorSpeed);
+        intakeOutPutMotor_2.set( Constants.inTakeMotorSpeed);
         tableInTakeOutPut.getEntry("InTake").setBoolean(true);
     }
 
  public void OutPut() {
     if (isInTaking){
         isOutPutting = true;
-        intakeOutPutMotor.set(-Constants.inTakeMotorSpeed);
+        intakeOutPutMotor_1.set(-Constants.inTakeMotorSpeed);
+        intakeOutPutMotor_2.set(-Constants.inTakeMotorSpeed);
         tableInTakeOutPut.getEntry("Output").setBoolean(true);
     }
  }
@@ -52,7 +56,8 @@ public class InTakeOutPut extends SubsystemBase{
  public void stop() {
     isOutPutting = false;
     isInTaking = false;
-    intakeOutPutMotor.set(0.0);
+    intakeOutPutMotor_1.set(0.0);
+    intakeOutPutMotor_2.set(0.0);
     tableInTakeOutPut.getEntry("OutPut").setBoolean(false);
     tableInTakeOutPut.getEntry("InTake").setBoolean(false);
  }

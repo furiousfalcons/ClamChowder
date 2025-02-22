@@ -17,11 +17,9 @@ import frc.robot.Constants;
 public class Elevator extends SubsystemBase{
     private boolean isUp = false;
     private SparkMax elevatorMotor;
-    private static final double ELEVATOR_UP_SPEED = 1;
-    private static final double ELEVATOR_DOWN_SPEED = 1;
-    private static final double HOLD_POWER = 1;
-    private static final double MOVE_TIME = 1;
-    private final Timer timer = new Timer();
+    private static final double ELEVATOR_UP_SPEED = 0.3;
+    private static final double ELEVATOR_DOWN_SPEED = -0.3;
+    private static final double HOLD_POWER = 0;
 
 
     public Elevator(){
@@ -35,26 +33,27 @@ public class Elevator extends SubsystemBase{
         elevatorMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
-    public void toggleElevator(){ // move up or down
-        timer.reset();
-        timer.start();
-        if (isUp){
-            elevatorMotor.set(ELEVATOR_DOWN_SPEED);        }
-        else{
-            elevatorMotor.set(ELEVATOR_UP_SPEED);        }
+    public void toggleUp(boolean isgo){ // move up or 
+        if(isgo){
+        elevatorMotor.set(ELEVATOR_UP_SPEED); 
+        isUp = true;
+        }   else{
+            isUp = false;
+        }
+        }
+        public void toggleDown(){
+            elevatorMotor.set(ELEVATOR_DOWN_SPEED);
         }
     
     // this goes somewhere in teleop or wherever the robot actually works i think
     public void update() {
-        if (timer.get() >= MOVE_TIME) {
             if (isUp) {
-                elevatorMotor.set(HOLD_POWER); // Apply hold power to keep the elevator up
+                System.out.println("Hold"); // Apply hold power to keep the elevator up
             } else {
                 elevatorMotor.set(0); // Stop the motor completely when down
             };
             isUp = !isUp;
-            timer.stop();
-        }
+
     }
     // at the end it should always go down so it matches isUp = false when the code starts running but idk where to put that
 
