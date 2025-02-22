@@ -25,7 +25,7 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
 
-
+  public static final int INTAKEOUTPUT_MOTOR_ID = 55;
   public static final int ELEVATOR_MOTOR_ID = 22;
   public static final int armMotorL = 9;
   public static final int armMotorR = 10;
@@ -44,9 +44,9 @@ public final class Constants {
     public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
 
     // Chassis configuration
-    public static final double kTrackWidth = Units.inchesToMeters(25);
+    public static final double kTrackWidth = Units.inchesToMeters(28.5);
     // Distance between centers of right and left wheels on robot
-    public static final double kWheelBase = Units.inchesToMeters(25);
+    public static final double kWheelBase = Units.inchesToMeters(28.5);
     // Distance between front and back wheels on robot
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
         new Translation2d(kWheelBase / 2, kTrackWidth / 2),
