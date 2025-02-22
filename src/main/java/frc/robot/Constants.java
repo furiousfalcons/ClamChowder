@@ -103,9 +103,16 @@ public static final int INTAKEOUTPUT_MOTOR_ID = 0;
     public static final double kPYController = 1;
     public static final double kPThetaController = 1;
 
+    public static final double kTrackWidth = 0.902;
+
+    public static final double kRamseteB = 2;
+    public static final double kRamseteZeta = 0.7;
+
+
     // Constraint for the motion profiled robot angle controller
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints = new TrapezoidProfile.Constraints(
         kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+    public static Object kHolonomicPathFollowerConfig;
   }
 
   public static final class NeoMotorConstants {

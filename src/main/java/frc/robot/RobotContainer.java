@@ -7,24 +7,36 @@ package frc.robot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.controller.RamseteController;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
+import edu.wpi.first.math.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.PS4Controller;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
+import edu.wpi.first.wpilibj.internal.DriverStationModeThread;
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 /*
@@ -40,6 +52,7 @@ public class RobotContainer {
   // The driver's controller
   PS4Controller m_driverController = new PS4Controller(OIConstants.kDriverControllerPort);
 
+  SendableChooser<Command> chooser = new SendableChooser<>();
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -60,7 +73,34 @@ public class RobotContainer {
                 -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
                 true),
             m_robotDrive));
+          // Temp comment
+    // chooser.addOption("New Auto", object);
+    // chooser.addOption("New New Auto" , object);
+
+    Shuffleboard.getTab("Autonomus").add(chooser);
+
   }
+// Hallo
+  // public Command loadPathplannerCommand(String filename, boolean resetOdometry){
+  //   Trajectory trajectory;
+  //   try{
+  //     Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(filename);
+  //     trajectory = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+  //   }
+  //     catch(IOException exception){
+  //       DriverStation.reportError("Unable to open trajectory" + filename, exception.getStackTrace());
+  //       System.out.println("Unable to read from file" + filename);
+  //       return new InstantCommand();
+  //     }
+  //     //
+  //     // RamseteCommand ramseteCommand = new RamseteCommand(trajectory, DriveSubsystem::getPose,
+  //     // new RamseteController(DriveTrainConstants.kRamseteB, drive) )
+
+
+  //   }
+
+
+// }
 
   /**
    * Use this method to define your button->command mappings. Buttons can be
@@ -92,6 +132,7 @@ public class RobotContainer {
  * @return 
    */
   public Object getAutonomousCommand() {
+    return chooser.getSelected();
     // Create config for trajectory
    /*  TrajectoryConfig config = new TrajectoryConfig(
         AutoConstants.kMaxSpeedMetersPerSecond,
@@ -130,8 +171,9 @@ public class RobotContainer {
  
     // Run path following command, then stop at the end.
     return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
+    */
   }
-*/  return null;}
+ // return null;}
   public void logTheBits() {
     // DriverStation.reportError(arm.getMeasurement()  +"", false);
   }
