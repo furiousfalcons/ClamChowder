@@ -21,11 +21,14 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.Down_Arm;
 import frc.robot.commands.Elevator_Up;
+import frc.robot.commands.Elevator_Down;
+import frc.robot.commands.IntakeIn;
+import frc.robot.commands.IntakeOut;
 import frc.robot.commands.Up_Arm;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.InTakeOutPut;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Intake;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -42,12 +45,13 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private Arm arm = new Arm();
-  private Intake intakeShooter = new Intake();
+  private InTakeOutPut intakeShooter = new InTakeOutPut();
   private Elevator climb = new Elevator();
 
   // private final InTake inTake = new InTake(intakeShooter);
   // private final Shoot shoot = new Shoot(intakeShooter);
   private final Elevator_Up elevator_Up = new Elevator_Up(climb);
+  private final Elevator_Down elevator_Down = new Elevator_Down(climb);
   private final Up_Arm armUp = new Up_Arm(arm);
   private final Down_Arm armDown = new Down_Arm(arm);
 
@@ -101,6 +105,7 @@ public class RobotContainer {
       elevatorDownButton.toggleOnTrue(elevator_Down);
       // inTakeButton .whileTrue(intake);
       // shootButton.whileTrue(output);
+
 
     }
   
