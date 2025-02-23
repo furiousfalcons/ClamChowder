@@ -13,6 +13,8 @@ public class Elevator_Down extends Command {
       addRequirements(subsystem);
     }
 
+    public int i = 2;
+
  // Called when the command is initially scheduled.
 @Override
 public void initialize() {
@@ -22,7 +24,9 @@ public void initialize() {
 // Called every time the scheduler runs while the command is scheduled.
 @Override
 public void execute() {
-    lift.toggleDown();
+    lift.toggleDown(i);
+    System.out.println(i);
+    i++;
 }
 
 // Called once the command ends or is interrupted.

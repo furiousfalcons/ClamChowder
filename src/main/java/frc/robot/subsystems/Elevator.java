@@ -14,12 +14,14 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.math.MathUtil;
 import frc.robot.Constants;
 
+
+
 public class Elevator extends SubsystemBase{
-    private boolean isUp = false;
-    private SparkMax elevatorMotor;
+   private SparkMax elevatorMotor;
     private static final double ELEVATOR_UP_SPEED = 0.3;
     private static final double ELEVATOR_DOWN_SPEED = -0.3;
     private static final double HOLD_POWER = 0;
+    public int i = 0;
 
 
     public Elevator(){
@@ -33,26 +35,24 @@ public class Elevator extends SubsystemBase{
         elevatorMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
-    public void toggleUp(boolean isgo){ // move up or 
-        if(isgo){
-        elevatorMotor.set(ELEVATOR_UP_SPEED); 
-        isUp = true;
-        }   else{
-            isUp = false;
+    public void toggleUp(int num){ // move up or
+        
+            if(num%2 == 0){
+        elevatorMotor.set(ELEVATOR_UP_SPEED);
+            } if(num%2 == 1) {
+        elevatorMotor.set(HOLD_POWER);
+            }
         }
-        }
-        public void toggleDown(){
-            elevatorMotor.set(ELEVATOR_DOWN_SPEED);
+        public void toggleDown(int num){
+            if(num%2 == 0){
+                elevatorMotor.set(ELEVATOR_DOWN_SPEED);
+            } if(num%2 == 1) {
+                elevatorMotor.set(HOLD_POWER);
+                    }
         }
     
     // this goes somewhere in teleop or wherever the robot actually works i think
     public void update() {
-            if (isUp) {
-                System.out.println("Hold"); // Apply hold power to keep the elevator up
-            } else {
-                elevatorMotor.set(0); // Stop the motor completely when down
-            };
-            isUp = !isUp;
 
     }
     // at the end it should always go down so it matches isUp = false when the code starts running but idk where to put that
