@@ -25,9 +25,9 @@ import frc.robot.Constants;
 public class Arm extends SubsystemBase{
 
     private SparkMax armMotorL;
-    private SparkMax armMotorR;
     private DutyCycleEncoder armEncoder;
     private final PIDController pidController;
+    public int i = 0;
 
 
     public Arm(){
@@ -35,7 +35,6 @@ public class Arm extends SubsystemBase{
         
 
         armMotorL = new SparkMax(Constants.armMotorL, MotorType.kBrushless);
-        armMotorR = new SparkMax(Constants.armMotorR, MotorType.kBrushless);
         armEncoder = new DutyCycleEncoder(Constants.armEncoder);
 
         pidController = new PIDController(0.011, 0.000, 0.000);
@@ -47,28 +46,34 @@ public class Arm extends SubsystemBase{
         config.smartCurrentLimit(40);
         config.closedLoop.pid(0.011, 0.0, 0.0);
 
-        armMotorL.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        armMotorR.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        
+        armMotorL.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);       
         armMotorL.setCANTimeout(250);
-        armMotorR.setCANTimeout(250);
 
         // getController().setTolerance(10);
 
         armMotorL.setCANTimeout(250);
-        armMotorR.setCANTimeout(250);
     }
 
-    public void armUp() { 
-        double distance = pidController.getSetpoint() - 2;
-        pidController.setSetpoint(Math.max(distance, 135) );
+    
+    public void armDown(int num) { 
+        if (num%2 == 0){
+            //double distance = pidController.getSetpoint() + 2;
+            pidController.setSetpoint(270);
+        }
+        if (num%2 == 1){
+            pidController.setSetpoint(pidController.getSetpoint());
+        }
 
     }
 
-    public void armDown() { 
-        double distance = pidController.getSetpoint() + 2;
-        
-        pidController.setSetpoint(Math.min(distance,270));
+    public void armUp(int num) { 
+        if (num%2 == 0){
+            //double distance = pidController.getSetpoint() - 2;
+            pidController.setSetpoint( 135) ;
+        }
+        if (num%2 == 1){
+            pidController.setSetpoint(pidController.getSetpoint());
+        }
 
     }
 
@@ -84,4 +89,3 @@ public class Arm extends SubsystemBase{
 
     
 }
-

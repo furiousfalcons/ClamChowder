@@ -21,11 +21,13 @@ import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.Down_Arm;
 import frc.robot.commands.Elevator_Up;
+import frc.robot.commands.InTake;
+import frc.robot.commands.OutPut;
 import frc.robot.commands.Up_Arm;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
-import frc.robot.subsystems.Intake;
+import frc.robot.subsystems.InTakeOutPut;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
@@ -42,7 +44,7 @@ public class RobotContainer {
   // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private Arm arm = new Arm();
-  private Intake intakeShooter = new Intake();
+  private InTakeOutPut inTakeOutPut = new InTakeOutPut();
   private Elevator climb = new Elevator();
 
   // private final InTake inTake = new InTake(intakeShooter);
@@ -50,7 +52,8 @@ public class RobotContainer {
   private final Elevator_Up elevator_Up = new Elevator_Up(climb);
   private final Up_Arm armUp = new Up_Arm(arm);
   private final Down_Arm armDown = new Down_Arm(arm);
-
+  private final InTake inTake = new InTake(inTakeOutPut);
+  private final OutPut outPut = new OutPut(inTakeOutPut);
  
 
 
@@ -92,17 +95,16 @@ public class RobotContainer {
      * {@link JoystickButton}.
      */
     private void configureButtonBindings() {
-      // JoystickButton armUpButton = new JoystickButton(m_driverController2, 4);
-      // JoystickButton armDownButton = new JoystickButton(m_driverController2, 1);
-      // JoystickButton inTakeButton = new JoystickButton(m_driverController2, 5);
-      // JoystickButton shootButton = new JoystickButton(m_driverController2, 6);
-      // JoystickButton elevatorButton = new JoystickButton(m_driverController2, 2);
-      // armUpButton.whileTrue(armUp);
-      // armDownButton.whileTrue(armDown);
-      // elevatorButton.whileTrue(elevator_Up);
-      // inTakeButton.whileTrue(inTake);
-      // shootButton.whileTrue(shoot);
-
+      JoystickButton armUpButton = new JoystickButton(m_driverController2, 4);
+      JoystickButton armDownButton = new JoystickButton(m_driverController2, 1);
+      JoystickButton inTakeButton = new JoystickButton(m_driverController2, 5);
+      JoystickButton outPutButton = new JoystickButton(m_driverController2, 6);
+      JoystickButton elevatorButton = new JoystickButton(m_driverController2, 2);
+      armUpButton.whileTrue(armUp);
+      armDownButton.whileTrue(armDown);
+      elevatorButton.whileTrue(elevator_Up);
+      inTakeButton.whileTrue(inTake);
+      outPutButton.whileTrue(outPut);
     }
   
     /**

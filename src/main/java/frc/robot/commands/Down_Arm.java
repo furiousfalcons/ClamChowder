@@ -19,7 +19,7 @@ public class Down_Arm extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    arm.armDown();
+    arm.armDown(0);
   }
 
   // Called once the command ends or is interrupted.
