@@ -82,14 +82,14 @@ public class RobotContainer {
                   -MathUtil.applyDeadband(m_driverController1.getRightX(), OIConstants.kDriveDeadband),
                   true, true),
               m_robotDrive));
-              new JoystickButton(m_driverController1, Button.kR1.value)
+              new JoystickButton(m_driverController1, Button.kR3.value)
               .whileTrue(new RunCommand( () -> m_robotDrive.setX(), m_robotDrive));
 
       climb.setDefaultCommand(
         new RunCommand(
           () -> climb.toggleElevator(
-            MathUtil.applyDeadband(m_driverController1.getLeftTriggerAxis(), 0.105),
-            MathUtil.applyDeadband(m_driverController1.getRightTriggerAxis(), 0.105)
+            -MathUtil.applyDeadband(m_driverController1.getLeftTriggerAxis(), 0.05),
+            -MathUtil.applyDeadband(m_driverController1.getRightTriggerAxis(), 0.05)
           ), 
         climb));
     }
@@ -110,8 +110,8 @@ public class RobotContainer {
       JoystickButton armUpButton = new JoystickButton(m_driverController1, 4);
       JoystickButton armDownButton = new JoystickButton(m_driverController1, 1);
       JoystickButton intakeButton = new JoystickButton(m_driverController1, 0);
-      armUpButton.whileTrue(armUp);
-      armDownButton.whileTrue(armDown);
+      armUpButton.onTrue(armUp);
+      armDownButton.onTrue(armDown);
       // elevatorUpButton.onTrue(elevator_Up);
       // elevatorDownButton.onTrue(elevator_Down);
       // intakeButton.whileTrue(intake);
