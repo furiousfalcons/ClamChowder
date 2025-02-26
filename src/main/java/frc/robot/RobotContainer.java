@@ -48,8 +48,8 @@ public class RobotContainer {
   private InTakeOutPut intakeShooter = new InTakeOutPut();
   private Elevator climb = new Elevator();
 
-  // private final InTake inTake = new InTake(intakeShooter);
-  // private final Shoot shoot = new Shoot(intakeShooter);
+  // private final IntakeIn inTake = new IntakeIn(intakeShooter);
+  // private final IntakeOut shoot = new IntakeOut(intakeShooter);
   private final Elevator_Up elevator_Up = new Elevator_Up(climb);
   private final Elevator_Down elevator_Down = new Elevator_Down(climb);
   private final Up_Arm armUp = new Up_Arm(arm);
@@ -84,6 +84,14 @@ public class RobotContainer {
               m_robotDrive));
               new JoystickButton(m_driverController1, Button.kR1.value)
               .whileTrue(new RunCommand( () -> m_robotDrive.setX(), m_robotDrive));
+
+      climb.setDefaultCommand(
+        new RunCommand(
+          () -> climb.toggleElevator(
+            MathUtil.applyDeadband(m_driverController1.getLeftTriggerAxis(), 0.105),
+            MathUtil.applyDeadband(m_driverController1.getRightTriggerAxis(), 0.105)
+          ), 
+        climb));
     }
   
     /**
@@ -97,13 +105,16 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
       JoystickButton shootButton = new JoystickButton(m_driverController1, 6);
-      JoystickButton elevatorUpButton = new JoystickButton(m_driverController1, 2);
-      JoystickButton elevatorDownButton = new JoystickButton(m_driverController1, 3);
-      // armUpButton.whileTrue(armUp);
-      // armDownButton.whileTrue(armDown);
-      elevatorUpButton.toggleOnTrue(elevator_Up);
-      elevatorDownButton.toggleOnTrue(elevator_Down);
-      // inTakeButton .whileTrue(intake);
+      // JoystickButton elevatorUpButton = new JoystickButton(m_driverController1, 2);
+      // JoystickButton elevatorDownButton = new JoystickButton(m_driverController1, 3);
+      JoystickButton armUpButton = new JoystickButton(m_driverController1, 4);
+      JoystickButton armDownButton = new JoystickButton(m_driverController1, 1);
+      JoystickButton intakeButton = new JoystickButton(m_driverController1, 0);
+      armUpButton.whileTrue(armUp);
+      armDownButton.whileTrue(armDown);
+      // elevatorUpButton.onTrue(elevator_Up);
+      // elevatorDownButton.onTrue(elevator_Down);
+      // intakeButton.whileTrue(intake);
       // shootButton.whileTrue(output);
 
 
