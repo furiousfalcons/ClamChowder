@@ -2,49 +2,38 @@ package frc.robot.subsystems;
 
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.SparkMax;
-import com.revrobotics.ColorSensorV3;
 
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.I2C;
-import edu.wpi.first.wpilibj.motorcontrol.Spark;
-import edu.wpi.first.wpilibj.util.Color;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class InTakeOutPut {
         private NetworkTable tableInTakeOutPut = NetworkTableInstance.getDefault().getTable("InTakeOutPut");
-    private SparkMax intakeOutPutMotor; 
-    private ColorSensorV3 colorSensor;
+    private SparkMax intakeOutPutMotor;
     private long time;
     private boolean isInTaking;
     private boolean isOutPutting;
-    private I2C.Port i2cPort;
     int proximity;
 
-    public InTakeOutPut() {
-        i2cPort = I2C.Port.kOnboard;
-        colorSensor = new ColorSensorV3(i2cPort);
+    public InTakeOutPut(){
         //work on the next line(WIP)
         intakeOutPutMotor = new SparkMax(Constants.INTAKEOUTPUT_MOTOR_ID, MotorType.kBrushless); 
         time = System.currentTimeMillis();
     }
 
     public void periodic() {
-        proximity = colorSensor.getProximity();
     }
 
     public void intake() {
         isInTaking = true;
-        intakeOutPutMotor.set( Constants.intakeMotorSpeed);
+        intakeOutPutMotor.set(Constants.intakeMotorSpeed);
         tableInTakeOutPut.getEntry("InTake").setBoolean(true);
     }
 
  public void OutPut() {
     if (isInTaking){
         isOutPutting = true;
-        intakeOutPutMotor.set(-Constants.OutputMotorSpeed);
+        intakeOutPutMotor.set(-Constants.intakeMotorSpeed);
         tableInTakeOutPut.getEntry("Output").setBoolean(true);
     }
  }
