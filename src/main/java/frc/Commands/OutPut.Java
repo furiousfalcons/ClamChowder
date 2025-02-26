@@ -1,5 +1,6 @@
-package frc.robot.commands;
+package frc.commands;
 
+import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
@@ -14,9 +15,6 @@ public class OutPut extends Command {
     addRequirements(subsystem);
     // Use addRequirements() here to declare subsystem dependencies.
   }
-
-
-  
 
   // Called when the command is initially scheduled.
   @Override
