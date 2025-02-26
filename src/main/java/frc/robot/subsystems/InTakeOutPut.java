@@ -16,6 +16,7 @@ import frc.robot.Constants;
 public class InTakeOutPut extends SubsystemBase{
         private NetworkTable tableInTakeOutPut = NetworkTableInstance.getDefault().getTable("InTakeOutPut");
     private SparkMax intakeOutPutMotor; 
+    private SparkMax intakeOutPutMotor_2;
     private ColorSensorV3 colorSensor;
     private long time;
     private boolean isInTaking;
@@ -27,7 +28,8 @@ public class InTakeOutPut extends SubsystemBase{
         i2cPort = I2C.Port.kOnboard;
         colorSensor = new ColorSensorV3(i2cPort);
         //work on the next line(WIP)
-        intakeOutPutMotor = new SparkMax(Constants.INTAKEOUTPUT_MOTOR_ID, MotorType.kBrushless); 
+        intakeOutPutMotor = new SparkMax(Constants.INTAKEOUTPUT_MOTOR_ID_1, MotorType.kBrushless); 
+        intakeOutPutMotor_2 = new SparkMax(Constants.INTAKEOUTPUT_MOTOR_ID_2, MotorType.kBrushless);
         time = System.currentTimeMillis();
     }
 
