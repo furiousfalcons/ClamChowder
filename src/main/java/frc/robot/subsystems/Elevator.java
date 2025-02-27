@@ -59,6 +59,7 @@ public class Elevator extends SubsystemBase{
     public void toggleElevator(double leftTrigger, double rightTrigger){
         double inputLeft = leftTrigger*ELEVATOR_UP_SPEED;
         double inputRight = rightTrigger*ELEVATOR_DOWN_SPEED;
+        System.out.println(inputLeft + " " + inputRight);
         if((inputLeft != 0) && (inputRight != 0)){
             elevatorMotor.set(HOLD_POWER);
         } else if((inputLeft != 0) && (inputRight == 0)){
@@ -68,6 +69,7 @@ public class Elevator extends SubsystemBase{
         } else {
             elevatorMotor.set(HOLD_POWER);
         }
+
 
     }
     

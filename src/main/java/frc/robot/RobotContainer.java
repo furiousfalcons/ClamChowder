@@ -24,6 +24,7 @@ import frc.robot.commands.Elevator_Up;
 import frc.robot.commands.Elevator_Down;
 import frc.robot.commands.IntakeIn;
 import frc.robot.commands.IntakeOut;
+import frc.robot.commands.Stop_Arm;
 import frc.robot.commands.Up_Arm;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.InTakeOutPut;
@@ -50,10 +51,12 @@ public class RobotContainer {
 
   private final IntakeIn inTake = new IntakeIn(intakeShooter);
   private final IntakeOut shoot = new IntakeOut(intakeShooter);
-  private final Elevator_Up elevator_Up = new Elevator_Up(climb);
-  private final Elevator_Down elevator_Down = new Elevator_Down(climb);
+  private final Stop_Intake stopIntake = new Stop_Intake(intakeShooter);
+  // private final Elevator_Up elevator_Up = new Elevator_Up(climb);
+  // private final Elevator_Down elevator_Down = new Elevator_Down(climb);
   private final Up_Arm armUp = new Up_Arm(arm);
   private final Down_Arm armDown = new Down_Arm(arm);
+  private final Stop_Arm armStop = new Stop_Arm(arm);
 
  
 
@@ -112,11 +115,14 @@ public class RobotContainer {
       JoystickButton inTakeButton = new JoystickButton(m_driverController1, 0);
       armUpButton.onTrue(armUp);
       armDownButton.onTrue(armDown);
+      armDownButton.onFalse(armStop);
+      armUpButton.onFalse(armStop);
       // elevatorUpButton.onTrue(elevator_Up);
       // elevatorDownButton.onTrue(elevator_Down);
-      inTakeButton.whileTrue(inTake);
-      shootButton.whileTrue(shoot);
-
+      inTakeButton.onTrue(inTake);
+      shootButton.onTrue(shoot);
+      inTakeButton.onFalse(stopIntake);
+      shootButton.onFalse(stopIntake);
 
     }
   

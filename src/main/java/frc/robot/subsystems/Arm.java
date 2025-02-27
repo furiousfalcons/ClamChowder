@@ -50,61 +50,59 @@ public class Arm extends SubsystemBase{
 
 
         armMotorL.setCANTimeout(250);
-    }
 
-    // public void armUp() { 
-    //     double distance = pidController.getSetpoint() - 2;
-    //     pidController.setSetpoint(Math.max(distance, 135) );
-    //     armMotorL.set(pidController.calculate(getMeasurement(), pidController.getSetpoint()));
-    // }
-
-    // public void armDown() { 
-    //     double distance = pidController.getSetpoint() + 2;
-    //     pidController.setSetpoint(Math.min(distance,270));
-    //     armMotorL.set(pidController.calculate(getMeasurement(), pidController.getSetpoint()));
-    // }
-
-    
-    // public double getMeasurement() {
-    //     return  armMotorL.getEncoder().getPosition(); //rotations not position unfortnately :()
-    // }
-
-    
-    // protected void useOutput(double output, double setpoint) {
-    //     System.out.println(output);
-    //  }
         
-    public void armDown(int num) { 
-        if (num%2 == 0){
-            //double distance = pidController.getSetpoint() + 2;
-            pidController.setSetpoint(270);
-        }
-        if (num%2 == 1){
-            pidController.setSetpoint(pidController.getSetpoint());
-        }
-
+        armMotorL.setCANTimeout(250);
     }
 
-    public void armUp(int num) { 
-        if (num%2 == 0){
-            //double distance = pidController.getSetpoint() - 2;
-            pidController.setSetpoint( 135) ;
-        }
-        if (num%2 == 1){
-            pidController.setSetpoint(pidController.getSetpoint());
-        }
+    public void armUp() { 
+        double distance = pidController.getSetpoint() - 2;
+        pidController.setSetpoint(Math.max(distance, 135) );
+        armMotorL.set(pidController.calculate(getMeasurement(), pidController.getSetpoint()));
+    }
 
+    public void armDown() { 
+        double distance = pidController.getSetpoint() + 2;
+        pidController.setSetpoint(Math.min(distance,270));
+        armMotorL.set(pidController.calculate(getMeasurement(), pidController.getSetpoint()));
     }
 
     
     public double getMeasurement() {
-        return  armEncoder.get(); //rotations not position unfortnately :()
+        return  armMotorL.getEncoder().getPosition(); //rotations not position unfortnately :()
     }
 
     
     protected void useOutput(double output, double setpoint) {
         System.out.println(output);
      }
+        
+    // public void armDown(int num) { 
+    //     if (num%2 == 0){
+    //         //double distance = pidController.getSetpoint() + 2;
+    //         pidController.setSetpoint(270);
+    //     }
+    //     if (num%2 == 1){
+    //         pidController.setSetpoint(pidController.getSetpoint());
+    //     }
+
+    // }
+
+    // public void armUp(int num) { 
+    //     if (num%2 == 0){
+    //         //double distance = pidController.getSetpoint() - 2;
+    //         pidController.setSetpoint( 135) ;
+    //     }
+    //     if (num%2 == 1){
+    //         pidController.setSetpoint(pidController.getSetpoint());
+    //     }
+
+    // }
+
+    public void armStop(){
+        pidController.setSetpoint(pidController.getSetpoint());
+    }
+
 
 
     

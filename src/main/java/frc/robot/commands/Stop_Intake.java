@@ -6,10 +6,10 @@ import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.InTakeOutPut;
 
 
-public class IntakeOut extends Command {
+public class Stop_Intake extends Command {
   /** Creates a new ClawGrab. */
   InTakeOutPut intakeOutPut;
-  public IntakeOut(InTakeOutPut subsystem) {
+  public Stop_Intake(InTakeOutPut subsystem) {
     intakeOutPut = subsystem;
     addRequirements(subsystem);
     // Use addRequirements() here to declare subsystem dependencies.
@@ -25,14 +25,13 @@ public class IntakeOut extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    intakeOutPut.OutPut();
-    SmartDashboard.putBoolean("Is OutPutting", intakeOutPut.isCurrentlyOutPutting());
+    intakeOutPut.stop();
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intakeOutPut.stop();
+   
   }
 
   // Returns true when the command should end.

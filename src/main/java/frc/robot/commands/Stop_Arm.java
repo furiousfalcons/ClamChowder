@@ -1,29 +1,30 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.Arm;
 
-public class Down_Arm extends Command {
-  /** Creates a new ArmDown. */
-  Arm arm;
-  public Down_Arm(Arm subsystem) {
-    // Use addRequirements() here to declare subsystem dependencies.\
-     arm = subsystem;
-     addRequirements(subsystem);
-     }
+public class Stop_Arm extends Command {
 
-     public int i = 2;
-  // Called when the command is initially scheduled.
+        Arm arm;
+        /** Creates a new ArmUp. */
+        public Stop_Arm(Arm subsystem) {
+          // Use addRequirements() here to declare subsystem dependencies.
+          arm = subsystem;
+          addRequirements(subsystem);
+        }
+
+
+     // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println("AHHHHHHHHHHHHHHHHHHHHHH");
+    
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    arm.armDown(i);
-    i++;
+    arm.armStop();
   }
 
   // Called once the command ends or is interrupted.
@@ -36,4 +37,3 @@ public class Down_Arm extends Command {
     return false;
   }
 }
-
