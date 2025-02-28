@@ -16,8 +16,8 @@ import frc.robot.Constants;
 
 public class Elevator extends SubsystemBase{
    private SparkMax elevatorMotor;
-    private static final double ELEVATOR_UP_SPEED = -0.5;
-    private static final double ELEVATOR_DOWN_SPEED = 0.5;
+    private static final double ELEVATOR_UP_SPEED = -0.7;
+    private static final double ELEVATOR_DOWN_SPEED = 0.7;
     private static final double HOLD_POWER = 0;
     private static final double MOVE_TIME = 1;
     private final Timer timer = new Timer();
@@ -59,7 +59,6 @@ public class Elevator extends SubsystemBase{
     public void toggleElevator(double leftTrigger, double rightTrigger){
         double inputLeft = leftTrigger*ELEVATOR_UP_SPEED;
         double inputRight = rightTrigger*ELEVATOR_DOWN_SPEED;
-        System.out.println(inputLeft + " " + inputRight);
         if((inputLeft != 0) && (inputRight != 0)){
             elevatorMotor.set(HOLD_POWER);
         } else if((inputLeft != 0) && (inputRight == 0)){

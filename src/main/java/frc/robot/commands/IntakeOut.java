@@ -26,13 +26,11 @@ public class IntakeOut extends Command {
   @Override
   public void execute() {
     intakeOutPut.OutPut();
-    SmartDashboard.putBoolean("Is OutPutting", intakeOutPut.isCurrentlyOutPutting());
   }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    intakeOutPut.stop();
   }
 
   // Returns true when the command should end.

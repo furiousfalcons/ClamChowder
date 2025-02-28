@@ -31,8 +31,8 @@ public final class Constants {
   public static final int armMotorL = 9;
 
   
-  public static final double inTakeMotorSpeed = .45; 
-  public static final double shootMotorSpeed = .75;
+  public static final double inTakeMotorSpeed = .25; 
+  public static final double shootMotorSpeed = .25;
 
   public static final int armEncoder = 0;
 

@@ -15,10 +15,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
 public class InTakeOutPut extends SubsystemBase{
-    private NetworkTable tableInTakeOutPut = NetworkTableInstance.getDefault().getTable("InTakeOutPut");
     private SparkMax intakeOutPutMotor; 
     private SparkMax intakeOutPutMotor2;
-    private long time;
     private boolean isInTaking;
     private boolean isOutPutting;
     int proximity;
@@ -27,7 +25,6 @@ public class InTakeOutPut extends SubsystemBase{
         //work on the next line(WIP)
         intakeOutPutMotor = new SparkMax(Constants.INTAKEOUTPUT_MOTOR_ID_1, MotorType.kBrushless); 
         intakeOutPutMotor2 = new SparkMax(Constants.INTAKEOUTPUT_MOTOR_ID_2, MotorType.kBrushless);
-        time = System.currentTimeMillis();
     }
 
     // public void periodic() {
@@ -36,26 +33,26 @@ public class InTakeOutPut extends SubsystemBase{
 
     public void intake() {
         isInTaking = true;
-        intakeOutPutMotor.set(Constants.inTakeMotorSpeed);
+        System.out.println("one");
+        intakeOutPutMotor.set(-Constants.inTakeMotorSpeed);
         intakeOutPutMotor2.set(-Constants.inTakeMotorSpeed);
-        tableInTakeOutPut.getEntry("InTake").setBoolean(true);
     }
 
  public void OutPut() {
     if (isInTaking){
         isOutPutting = true;
-        intakeOutPutMotor.set(-Constants.inTakeMotorSpeed);
+        System.out.println("two");
+        intakeOutPutMotor.set(Constants.inTakeMotorSpeed);
         intakeOutPutMotor2.set(Constants.inTakeMotorSpeed);
-        tableInTakeOutPut.getEntry("Output").setBoolean(true);
     }
  }
 
  public void stop() {
     isOutPutting = false;
     isInTaking = false;
+    System.out.println("three");
     intakeOutPutMotor.set(0.0);
-    tableInTakeOutPut.getEntry("OutPut").setBoolean(false);
-    tableInTakeOutPut.getEntry("InTake").setBoolean(false);
+    intakeOutPutMotor2.set(0.0);
  }
 
  public boolean isCurrentlyInTaking()

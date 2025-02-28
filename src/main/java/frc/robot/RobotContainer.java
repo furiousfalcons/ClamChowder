@@ -25,6 +25,7 @@ import frc.robot.commands.Elevator_Down;
 import frc.robot.commands.IntakeIn;
 import frc.robot.commands.IntakeOut;
 import frc.robot.commands.Stop_Arm;
+import frc.robot.commands.Stop_Intake;
 import frc.robot.commands.Up_Arm;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.InTakeOutPut;
@@ -107,18 +108,12 @@ public class RobotContainer {
      * {@link JoystickButton}.
      */
     private void configureButtonBindings() {
-      JoystickButton shootButton = new JoystickButton(m_driverController1, 6);
-      // JoystickButton elevatorUpButton = new JoystickButton(m_driverController1, 2);
-      // JoystickButton elevatorDownButton = new JoystickButton(m_driverController1, 3);
+      JoystickButton shootButton = new JoystickButton(m_driverController1, 3);
       JoystickButton armUpButton = new JoystickButton(m_driverController1, 4);
       JoystickButton armDownButton = new JoystickButton(m_driverController1, 1);
-      JoystickButton inTakeButton = new JoystickButton(m_driverController1, 0);
+      JoystickButton inTakeButton = new JoystickButton(m_driverController1, 2);
       armUpButton.onTrue(armUp);
       armDownButton.onTrue(armDown);
-      armDownButton.onFalse(armStop);
-      armUpButton.onFalse(armStop);
-      // elevatorUpButton.onTrue(elevator_Up);
-      // elevatorDownButton.onTrue(elevator_Down);
       inTakeButton.onTrue(inTake);
       shootButton.onTrue(shoot);
       inTakeButton.onFalse(stopIntake);
