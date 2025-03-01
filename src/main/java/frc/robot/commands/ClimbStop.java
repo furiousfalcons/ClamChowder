@@ -1,12 +1,11 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Climb;
 
-public class Down_Arm extends Command {
-  /** Creates a new ArmDown. */
-  Arm arm;
-  public Down_Arm(Arm subsystem) {
+public class ClimbStop extends Command{
+    Climb arm;
+  public ClimbStop(Climb subsystem) {
     // Use addRequirements() here to declare subsystem dependencies.\
      arm = subsystem;
      addRequirements(subsystem);
@@ -25,7 +24,7 @@ public class Down_Arm extends Command {
   public void execute() {
     // arm.armDown(i);
     // i++;
-    arm.armDown();
+    arm.climbStop();
 
     // arm.moveArmDown();
   }

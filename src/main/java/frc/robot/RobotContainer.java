@@ -28,6 +28,9 @@ import frc.robot.commands.Stop_Arm;
 import frc.robot.commands.Stop_Intake;
 import frc.robot.commands.Up_Arm;
 import frc.robot.subsystems.Arm;
+import frc.robot.commands.ClimbON;
+import frc.robot.commands.ClimbStop;
+import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.InTakeOutPut;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
@@ -49,12 +52,14 @@ public class RobotContainer {
   private Arm arm = new Arm();
   private InTakeOutPut intakeShooter = new InTakeOutPut();
   private Elevator climb = new Elevator();
+  private Climb goClimb = new Climb();
 
   private final IntakeIn inTake = new IntakeIn(intakeShooter);
   private final IntakeOut shoot = new IntakeOut(intakeShooter);
+  private final ClimbON climb_r = new ClimbON(goClimb);
+  private final ClimbStop climb_f = new ClimbStop(goClimb);
   private final Stop_Intake stopIntake = new Stop_Intake(intakeShooter);
-  // private final Elevator_Up elevator_Up = new Elevator_Up(climb);
-  // private final Elevator_Down elevator_Down = new Elevator_Down(climb);
+  
   private final Up_Arm armUp = new Up_Arm(arm);
   private final Down_Arm armDown = new Down_Arm(arm);
   private final Stop_Arm armStop = new Stop_Arm(arm);
@@ -96,6 +101,12 @@ public class RobotContainer {
             -MathUtil.applyDeadband(m_driverController1.getRightTriggerAxis(), 0.05)
           ), 
         climb));
+
+        // arm.setDefaultCommand(
+        //   new RunCommand(
+        //     () -> arm.
+        //   )
+        // );
     }
   
     /**
@@ -112,14 +123,17 @@ public class RobotContainer {
       JoystickButton armUpButton = new JoystickButton(m_driverController1, 4);
       JoystickButton armDownButton = new JoystickButton(m_driverController1, 1);
       JoystickButton inTakeButton = new JoystickButton(m_driverController1, 2);
+      JoystickButton climbButton = new JoystickButton(m_driverController1, 5);
+      climbButton.whileTrue(climb_r);
+      climbButton.whileFalse(climb_f);
       armUpButton.toggleOnTrue(armUp);
       armDownButton.toggleOnTrue(armDown);
       inTakeButton.toggleOnTrue(inTake);
       shootButton.toggleOnTrue(shoot);
       inTakeButton.toggleOnFalse(stopIntake);
       shootButton.toggleOnFalse(stopIntake);
-      // armUpButton.toggleOnFalse(armStop);
-      // armDownButton.toggleOnFalse(armStop);
+      armUpButton.toggleOnFalse(armStop);
+      armDownButton.toggleOnFalse(armStop);
 
     }
   

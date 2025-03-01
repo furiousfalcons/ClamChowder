@@ -33,14 +33,12 @@ public class InTakeOutPut extends SubsystemBase{
 
     public void intake() {
   
-        System.out.println("one");
         intakeOutPutMotor.set(-Constants.inTakeMotorSpeed);
         intakeOutPutMotor2.set(Constants.inTakeMotorSpeed);
     }
 
  public void OutPut() {
  
-        System.out.println("two");
         intakeOutPutMotor.set(Constants.inTakeMotorSpeed);
         intakeOutPutMotor2.set(-Constants.inTakeMotorSpeed);
     
@@ -49,7 +47,6 @@ public class InTakeOutPut extends SubsystemBase{
  public void stop() {
     isOutPutting = false;
     isInTaking = false;
-    System.out.println("three");
     intakeOutPutMotor.set(0.0);
     intakeOutPutMotor2.set(0.0);
  }
