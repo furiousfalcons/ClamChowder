@@ -103,6 +103,9 @@ public class DriveSubsystem extends SubsystemBase {
     kinematics = null;
     odometry = null;
     modules = null;
+
+
+
     // Usage reporting for MAXSwerve template
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_MaxSwerve);
     RobotConfig config;
@@ -110,8 +113,8 @@ public class DriveSubsystem extends SubsystemBase {
       config = RobotConfig.fromGUISettings();
     } catch (Exception e) {
       // Handle exception as neededs
-      config = null;
       e.printStackTrace();
+      config = null;
     }
 
     AutoBuilder.configure(
