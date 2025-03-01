@@ -27,8 +27,8 @@ public class Up_Arm extends Command {
   public void execute() {
     // arm.armUp(i);
     // i++;
-    // arm.armUp();
-    arm.moveArmUp();
+    arm.armUp();
+    // arm.moveArmUp();
   }
 
   // Called once the command ends or is interrupted.

@@ -112,12 +112,14 @@ public class RobotContainer {
       JoystickButton armUpButton = new JoystickButton(m_driverController1, 4);
       JoystickButton armDownButton = new JoystickButton(m_driverController1, 1);
       JoystickButton inTakeButton = new JoystickButton(m_driverController1, 2);
-      armUpButton.onTrue(armUp);
-      armDownButton.onTrue(armDown);
-      inTakeButton.onTrue(inTake);
-      shootButton.onTrue(shoot);
-      inTakeButton.onFalse(stopIntake);
-      shootButton.onFalse(stopIntake);
+      armUpButton.toggleOnTrue(armUp);
+      armDownButton.toggleOnTrue(armDown);
+      inTakeButton.toggleOnTrue(inTake);
+      shootButton.toggleOnTrue(shoot);
+      inTakeButton.toggleOnFalse(stopIntake);
+      shootButton.toggleOnFalse(stopIntake);
+      // armUpButton.toggleOnFalse(armStop);
+      // armDownButton.toggleOnFalse(armStop);
 
     }
   
