@@ -20,6 +20,7 @@ import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.Odometry;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -37,14 +38,44 @@ import frc.Utils.SwerveUtils;
 
 
 public class DriveSubsystem extends SubsystemBase {
-  private final SimSwerveModule[] modules;
-  private final SwerveDriveKinematics kinematics;
-  private final SwerveDriveOdometry odometry;
+  private final SimSwerveModule[] modules = null;
+  private final SwerveDriveKinematics kinematics = DriveConstants.kDriveKinematics;
 
   private SimGyro gyro;
 
   private Field2d field = new Field2d();
 
+  private final MAXSwerveModule m_frontLeft = new MAXSwerveModule(
+    DriveConstants.kFrontLeftDrivingCanId,
+    DriveConstants.kFrontLeftTurningCanId,
+    DriveConstants.kFrontLeftChassisAngularOffset);
+
+private final MAXSwerveModule m_frontRight = new MAXSwerveModule(
+    DriveConstants.kFrontRightDrivingCanId,
+    DriveConstants.kFrontRightTurningCanId,
+    DriveConstants.kFrontRightChassisAngularOffset);
+
+private final MAXSwerveModule m_rearLeft = new MAXSwerveModule(
+    DriveConstants.kRearLeftDrivingCanId,
+    DriveConstants.kRearLeftTurningCanId,
+    DriveConstants.kBackLeftChassisAngularOffset);
+
+private final MAXSwerveModule m_rearRight = new MAXSwerveModule(
+    DriveConstants.kRearRightDrivingCanId,
+    DriveConstants.kRearRightTurningCanId,
+    DriveConstants.kBackRightChassisAngularOffset);
+
+    private final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
+
+    private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(
+      DriveConstants.kDriveKinematics,
+      Rotation2d.fromDegrees(m_gyro.getAngle(IMUAxis.kZ)),
+      new SwerveModulePosition[] {
+          m_frontLeft.getPosition(),
+          m_frontRight.getPosition(),
+          m_rearLeft.getPosition(),
+          m_rearRight.getPosition()
+      });
   // private final LoggedDashboardChooser<Command> autoChooser;
 
   static void test(){
@@ -52,31 +83,14 @@ public class DriveSubsystem extends SubsystemBase {
   }
 
   public static void main(String[] args){
+    
     test();
    }
   // Create MAXSwerveModules
-  private final MAXSwerveModule m_frontLeft = new MAXSwerveModule(
-      DriveConstants.kFrontLeftDrivingCanId,
-      DriveConstants.kFrontLeftTurningCanId,
-      DriveConstants.kFrontLeftChassisAngularOffset);
 
-  private final MAXSwerveModule m_frontRight = new MAXSwerveModule(
-      DriveConstants.kFrontRightDrivingCanId,
-      DriveConstants.kFrontRightTurningCanId,
-      DriveConstants.kFrontRightChassisAngularOffset);
-
-  private final MAXSwerveModule m_rearLeft = new MAXSwerveModule(
-      DriveConstants.kRearLeftDrivingCanId,
-      DriveConstants.kRearLeftTurningCanId,
-      DriveConstants.kBackLeftChassisAngularOffset);
-
-  private final MAXSwerveModule m_rearRight = new MAXSwerveModule(
-      DriveConstants.kRearRightDrivingCanId,
-      DriveConstants.kRearRightTurningCanId,
-      DriveConstants.kBackRightChassisAngularOffset);
 
   // The gyro sensor
-  private final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
+ 
 
    // Slew rate filter variables for controlling lateral acceleration
    private double m_currentRotation = 0.0;
@@ -88,21 +102,11 @@ public class DriveSubsystem extends SubsystemBase {
    private double m_prevTime = WPIUtilJNI.now() * 1e-6;
 
   // Odometry class for tracking robot pose
-  SwerveDriveOdometry m_odometry = new SwerveDriveOdometry(
-      DriveConstants.kDriveKinematics,
-      Rotation2d.fromDegrees(m_gyro.getAngle(IMUAxis.kZ)),
-      new SwerveModulePosition[] {
-          m_frontLeft.getPosition(),
-          m_frontRight.getPosition(),
-          m_rearLeft.getPosition(),
-          m_rearRight.getPosition()
-      });
+ 
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
-    kinematics = null;
-    odometry = null;
-    modules = null;
+    // modules = null;
 
 
 
@@ -144,7 +148,7 @@ public class DriveSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // Update the odometry in the periodic block
-    m_odometry.update(
+    odometry.update(
         Rotation2d.fromDegrees(m_gyro.getAngle(IMUAxis.kZ)),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
@@ -160,7 +164,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @return The pose.
    */
   public Pose2d getPose() {
-    return m_odometry.getPoseMeters();
+    return odometry.getPoseMeters();
   }
 
   public void resetPose(Pose2d pose) {
@@ -248,7 +252,7 @@ public class DriveSubsystem extends SubsystemBase {
    * @param pose The pose to which to set the odometry.
    */
   public void resetOdometry(Pose2d pose) {
-    m_odometry.resetPosition(
+    odometry.resetPosition(
         Rotation2d.fromDegrees(m_gyro.getAngle(IMUAxis.kZ)),
         new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
