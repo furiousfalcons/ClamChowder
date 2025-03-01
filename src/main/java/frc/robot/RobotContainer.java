@@ -4,6 +4,17 @@
 
 package frc.robot;
 
+import java.util.List;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.events.EventTrigger;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -15,10 +26,14 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.ClimbON;
+import frc.robot.commands.ClimbStop;
 import frc.robot.commands.Down_Arm;
 import frc.robot.commands.Elevator_Up;
 import frc.robot.commands.Elevator_Down;
@@ -27,7 +42,9 @@ import frc.robot.commands.IntakeOut;
 import frc.robot.commands.Stop_Arm;
 import frc.robot.commands.Stop_Intake;
 import frc.robot.commands.Up_Arm;
+import frc.robot.commands.climbDown;
 import frc.robot.subsystems.Arm;
+import frc.robot.subsystems.Climb;
 import frc.robot.subsystems.InTakeOutPut;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
@@ -37,6 +54,8 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
 
+import com.pathplanner.lib.auto.AutoBuilder;
+
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
  * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
@@ -44,21 +63,25 @@ import java.util.List;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+
+  private final SendableChooser<Command> autoChooser;
   // The robot's subsystems
-  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+    private final DriveSubsystem m_robotDrive = new DriveSubsystem();
   private Arm arm = new Arm();
   private InTakeOutPut intakeShooter = new InTakeOutPut();
   private Elevator climb = new Elevator();
+  private Climb goClimb = new Climb();
 
   private final IntakeIn inTake = new IntakeIn(intakeShooter);
   private final IntakeOut shoot = new IntakeOut(intakeShooter);
+  private final climbDown climb_p = new climbDown(goClimb);
+  private final ClimbON climb_r = new ClimbON(goClimb);
+  private final ClimbStop climb_f = new ClimbStop(goClimb);
   private final Stop_Intake stopIntake = new Stop_Intake(intakeShooter);
-  // private final Elevator_Up elevator_Up = new Elevator_Up(climb);
-  // private final Elevator_Down elevator_Down = new Elevator_Down(climb);
+  
   private final Up_Arm armUp = new Up_Arm(arm);
   private final Down_Arm armDown = new Down_Arm(arm);
   private final Stop_Arm armStop = new Stop_Arm(arm);
-
  
 
 
@@ -70,8 +93,11 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+
+   
       // Configure the button bindings
       configureButtonBindings();
+      
   
       // Configure default commands
       m_robotDrive.setDefaultCommand(
@@ -96,6 +122,9 @@ public class RobotContainer {
             -MathUtil.applyDeadband(m_driverController1.getRightTriggerAxis(), 0.05)
           ), 
         climb));
+
+        autoChooser = AutoBuilder.buildAutoChooser();
+        SmartDashboard.putData("Auto Mode", autoChooser);
     }
   
     /**
@@ -108,16 +137,27 @@ public class RobotContainer {
      * {@link JoystickButton}.
      */
     private void configureButtonBindings() {
+
+      SmartDashboard.putData("Straight Auto.auto", new PathPlannerAuto("Straight Auto.auto"));
+
       JoystickButton shootButton = new JoystickButton(m_driverController1, 3);
       JoystickButton armUpButton = new JoystickButton(m_driverController1, 4);
       JoystickButton armDownButton = new JoystickButton(m_driverController1, 1);
       JoystickButton inTakeButton = new JoystickButton(m_driverController1, 2);
-      armUpButton.onTrue(armUp);
-      armDownButton.onTrue(armDown);
-      inTakeButton.onTrue(inTake);
-      shootButton.onTrue(shoot);
-      inTakeButton.onFalse(stopIntake);
-      shootButton.onFalse(stopIntake);
+      JoystickButton climbButton = new JoystickButton(m_driverController1, 5);
+      JoystickButton climbButton2 = new JoystickButton(m_driverController1, 6);
+      climbButton2.whileTrue(climb_p);
+      climbButton.whileTrue(climb_r);
+      climbButton2.whileFalse(climb_f);
+      climbButton.whileFalse(climb_f);
+      armUpButton.toggleOnTrue(armUp);
+      armDownButton.toggleOnTrue(armDown);
+      inTakeButton.whileTrue(inTake);
+      shootButton.whileTrue(shoot);
+      inTakeButton.whileFalse(stopIntake);
+      shootButton.whileFalse(stopIntake);
+      armUpButton.toggleOnFalse(armStop);
+      armDownButton.toggleOnFalse(armStop);
 
     }
   
@@ -126,6 +166,7 @@ public class RobotContainer {
    * @return 
      */
     public Object getAutonomousCommand() {
+      return autoChooser.getSelected();
       // Create config for trajectory
      /*  TrajectoryConfig config = new TrajectoryConfig(
           AutoConstants.kMaxSpeedMetersPerSecond,
@@ -165,7 +206,7 @@ public class RobotContainer {
       // Run path following command, then stop at the end.
       return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
     }
-  */  return null;}
+  // *  return null;}
     public void logTheBits() {
       // DriverStation.reportError(arm.getMeasurement()  +"", false);
     }
@@ -178,3 +219,4 @@ public class RobotContainer {
         i++;
       }*/
   }
+}

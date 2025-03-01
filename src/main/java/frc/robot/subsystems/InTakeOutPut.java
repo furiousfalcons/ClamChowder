@@ -24,7 +24,7 @@ public class InTakeOutPut extends SubsystemBase{
     public InTakeOutPut() {
         //work on the next line(WIP)
         intakeOutPutMotor = new SparkMax(Constants.INTAKEOUTPUT_MOTOR_ID_1, MotorType.kBrushless); 
-        intakeOutPutMotor2 = new SparkMax(Constants.INTAKEOUTPUT_MOTOR_ID_2, MotorType.kBrushless);
+        intakeOutPutMotor2 = new SparkMax(14, MotorType.kBrushless);
     }
 
     // public void periodic() {
@@ -32,25 +32,21 @@ public class InTakeOutPut extends SubsystemBase{
     // }
 
     public void intake() {
-        isInTaking = true;
-        System.out.println("one");
+  
         intakeOutPutMotor.set(-Constants.inTakeMotorSpeed);
-        intakeOutPutMotor2.set(-Constants.inTakeMotorSpeed);
+        intakeOutPutMotor2.set(Constants.inTakeMotorSpeed);
     }
 
  public void OutPut() {
-    if (isInTaking){
-        isOutPutting = true;
-        System.out.println("two");
+ 
         intakeOutPutMotor.set(Constants.inTakeMotorSpeed);
-        intakeOutPutMotor2.set(Constants.inTakeMotorSpeed);
-    }
+        intakeOutPutMotor2.set(-Constants.inTakeMotorSpeed);
+    
  }
 
  public void stop() {
     isOutPutting = false;
     isInTaking = false;
-    System.out.println("three");
     intakeOutPutMotor.set(0.0);
     intakeOutPutMotor2.set(0.0);
  }

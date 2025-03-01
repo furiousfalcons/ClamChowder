@@ -16,7 +16,6 @@ public class Down_Arm extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    System.out.println("AHHHHHHHHHHHHHHHHHHHHHH");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -24,8 +23,8 @@ public class Down_Arm extends Command {
   public void execute() {
     // arm.armDown(i);
     // i++;
-    // arm.armDown();
-    arm.moveArmDown();
+    arm.armDown();
+    // arm.moveArmDown();
   }
 
   // Called once the command ends or is interrupted.
