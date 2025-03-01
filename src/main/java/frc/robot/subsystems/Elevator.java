@@ -16,8 +16,8 @@ import frc.robot.Constants;
 
 public class Elevator extends SubsystemBase{
    private SparkMax elevatorMotor;
-    private static final double ELEVATOR_UP_SPEED = -0.7;
-    private static final double ELEVATOR_DOWN_SPEED = 0.7;
+    private static final double ELEVATOR_UP_SPEED = -1;
+    private static final double ELEVATOR_DOWN_SPEED = 1;
     private static final double HOLD_POWER = 0;
     private static final double MOVE_TIME = 1;
     private final Timer timer = new Timer();

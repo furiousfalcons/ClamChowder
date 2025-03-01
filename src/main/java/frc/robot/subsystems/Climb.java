@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+ package frc.robot.subsystems;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
@@ -43,3 +43,4 @@ public class Climb extends SubsystemBase {
         climbMotor.set(0);
     }
 }
+
