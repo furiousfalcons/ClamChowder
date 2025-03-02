@@ -38,6 +38,9 @@ import frc.Utils.SwerveUtils;
 
 
 public class DriveSubsystem extends SubsystemBase {
+  
+  
+  
   private final SimSwerveModule[] modules = null;
   private final SwerveDriveKinematics kinematics = DriveConstants.kDriveKinematics;
 
@@ -189,7 +192,7 @@ private final MAXSwerveModule m_rearRight = new MAXSwerveModule(
   
 
   public void setStates(SwerveModuleState[] targetStates) {
-    SwerveDriveKinematics.desaturateWheelSpeeds(targetStates, 3.0);
+    SwerveDriveKinematics.desaturateWheelSpeeds(targetStates, 4.8);
 
     for (int i = 0; i < modules.length; i++) {
       modules[i].setTargetState(targetStates[i]);
