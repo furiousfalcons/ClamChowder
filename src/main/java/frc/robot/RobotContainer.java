@@ -168,14 +168,6 @@ public class RobotContainer {
       shootButton.whileTrue(shoot);
       inTakeButton.whileFalse(stopIntake);
       shootButton.whileFalse(stopIntake);
-      climbButton.whileTrue(climb_r);
-      climbButton.whileFalse(climb_f);
-      armUpButton.toggleOnTrue(armUp);
-      armDownButton.toggleOnTrue(armDown);
-      inTakeButton.toggleOnTrue(inTake);
-      shootButton.toggleOnTrue(shoot);
-      inTakeButton.toggleOnFalse(stopIntake);
-      shootButton.toggleOnFalse(stopIntake);
       armUpButton.toggleOnFalse(armStop);
       armDownButton.toggleOnFalse(armStop);
 
@@ -228,7 +220,7 @@ public class RobotContainer {
       // // Run path following command, then stop at the end.
       // return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
 
-      return new PathPlannerAuto("Straight Auto");
+      return autoChooser.getSelected();
     }
   // *  return null;}
     public void logTheBits() {
