@@ -124,8 +124,8 @@ public class RobotContainer {
       climb.setDefaultCommand(
         new RunCommand(
           () -> climb.toggleElevator(
-            -MathUtil.applyDeadband(m_driverController1.getLeftTriggerAxis(), 0.05),
-            -MathUtil.applyDeadband(m_driverController1.getRightTriggerAxis(), 0.05)
+            -MathUtil.applyDeadband(m_driverController2.getLeftTriggerAxis(), 0.05),
+            -MathUtil.applyDeadband(m_driverController2.getRightTriggerAxis(), 0.05)
           ), 
         climb));
     
@@ -152,12 +152,12 @@ public class RobotContainer {
 
       SmartDashboard.putData("Straight Auto.auto", new PathPlannerAuto("Straight Auto.auto"));
 
-      JoystickButton shootButton = new JoystickButton(m_driverController1, 3);
-      JoystickButton armUpButton = new JoystickButton(m_driverController1, 4);
-      JoystickButton armDownButton = new JoystickButton(m_driverController1, 1);
-      JoystickButton inTakeButton = new JoystickButton(m_driverController1, 2);
-       JoystickButton climbButton = new JoystickButton(m_driverController1, 5);
-      JoystickButton climbButton2 = new JoystickButton(m_driverController1, 6);
+      JoystickButton shootButton = new JoystickButton(m_driverController2, 3);
+      JoystickButton armUpButton = new JoystickButton(m_driverController2, 4);
+      JoystickButton armDownButton = new JoystickButton(m_driverController2, 1);
+      JoystickButton inTakeButton = new JoystickButton(m_driverController2, 2);
+       JoystickButton climbButton = new JoystickButton(m_driverController2, 5);
+      JoystickButton climbButton2 = new JoystickButton(m_driverController2, 6);
       climbButton2.whileTrue(climb_p);
       climbButton.whileTrue(climb_r);
       climbButton2.whileFalse(climb_f);
