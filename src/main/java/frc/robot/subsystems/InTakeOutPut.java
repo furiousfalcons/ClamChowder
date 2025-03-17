@@ -18,20 +18,18 @@ public class InTakeOutPut extends SubsystemBase{
     private SparkMax intakeOutPutMotor2;
     private boolean isInTaking;
     private boolean isOutPutting;
-    private I2C.Port i2cPort;
     int proximity;
 
     public InTakeOutPut() {
-        i2cPort = I2C.Port.kOnboard;
         // colorSensor = new ColorSensorV3(i2cPort);
         //work on the next line(WIP)
         intakeOutPutMotor = new SparkMax(Constants.INTAKEOUTPUT_MOTOR_ID_1, MotorType.kBrushless); 
         intakeOutPutMotor2 = new SparkMax(14, MotorType.kBrushless);
     }
 
-    public void periodic() {
-        // proximity = colorSensor.getProximity();
-    }
+    // public void periodic() {
+    //     proximity = colorSensor.getProximity();
+    // }
 
     public void intake() {
         intakeOutPutMotor.set(-Constants.inTakeMotorSpeed);
@@ -42,7 +40,7 @@ public class InTakeOutPut extends SubsystemBase{
  
         intakeOutPutMotor.set(Constants.inTakeMotorSpeed);
         intakeOutPutMotor2.set(-Constants.inTakeMotorSpeed);
- }
+    }
 
  public void stop() {
     isOutPutting = false;
