@@ -6,6 +6,7 @@ import frc.robot.subsystems.Elevator;
 public class Elevator_Down extends Command {
 
     Elevator lift;
+    
     /** Creates a new ArmUp. */
     public Elevator_Down(Elevator subsystem) {
       // Use addRequirements() here to declare subsystem dependencies.

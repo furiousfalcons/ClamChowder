@@ -4,35 +4,29 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.InTakeOutPut;
 
-public class IntakeOut extends Command {
-
-        InTakeOutPut intake;
-        /** Creates a new ArmUp. */
-        public IntakeOut(InTakeOutPut subsystem) {
-          // Use addRequirements() here to declare subsystem dependencies.
-          intake = subsystem;
-          addRequirements(subsystem);
-        }
-
-     // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
+  public class IntakeOut extends Command {
+    /** Creates a new ClawGrab. */
+    InTakeOutPut intakeOutPut;
+    public IntakeOut(InTakeOutPut subsystem) {
+      intakeOutPut = subsystem;
+      addRequirements(subsystem);
+      // Use addRequirements() here to declare subsystem dependencies.
+    }
+  
+  
     
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    intake.intake();
-  }
-
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {}
-
-  // Returns true when the command should end.
-  @Override
+  
+    // Called when the command is initially scheduled.
+    @Override
+    public void initialize() {
+      intakeOutPut.OutPut();
+    }
+    @Override
+    public void end(boolean interrupted) {
+    }
+    @Override
   public boolean isFinished() {
-    return false;
+      return false;
   }
+
 }
