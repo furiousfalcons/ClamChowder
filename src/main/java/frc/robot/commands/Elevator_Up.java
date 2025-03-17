@@ -24,6 +24,7 @@ public void initialize() {
 // Called every time the scheduler runs while the command is scheduled.
 @Override
 public void execute() {
+  lift.elevatorUp();
   // lift.toggleUp(i);
   // System.out.println(i);
   // i++;

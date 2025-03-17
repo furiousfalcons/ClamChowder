@@ -1,0 +1,67 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.725812064965197,
+        "y": 2.7627030162412995
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 4.725812064965197,
+        "y": 2.7627030162413
+      },
+      "isLocked": false,
+      "linkedName": "Blue Back Bottom Reef"
+    },
+    {
+      "anchor": {
+        "x": 6.023190789473683,
+        "y": 0.6045823665893272
+      },
+      "prevControl": {
+        "x": 5.023190789473683,
+        "y": 0.6045823665893275
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": "Amp"
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "L2 to L1",
+      "waypointRelativePos": 0,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "Output",
+      "waypointRelativePos": 1.0,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": -90.84420958419675
+  },
+  "reversed": false,
+  "folder": "Blue mid A",
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": 54.24611274556323
+  },
+  "useDefaultConstraints": true
+}

@@ -5,10 +5,15 @@
 package frc.robot;
 
 import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.VideoSource.ConnectionStrategy;
+// import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
-import frc.robot.RobotContainer;
+import edu.wpi.first.cscore.VideoSink;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -17,8 +22,23 @@ import frc.robot.RobotContainer;
  * project.
  */
 public class Robot extends TimedRobot {
+  UsbCamera camera1;
+  UsbCamera camera2;
+  VideoSink server;
+  NetworkTableEntry cameraSelection;
+  Joystick joy1 = new Joystick(0);
+
+  // private Timer matchTimer;
+  // private int matchTimerRemaining;
   public Robot() {
-    CameraServer.startAutomaticCapture();
+    camera1 = CameraServer.startAutomaticCapture(0);
+    camera2 = CameraServer.startAutomaticCapture(1);
+    server = CameraServer.getServer();
+    camera1.setConnectionStrategy(ConnectionStrategy.kKeepOpen);
+    camera2.setConnectionStrategy(ConnectionStrategy.kKeepOpen);
+    //cameraSelection = NetworkTableInstance.getDefault().getTable("").getEntry("CameraSelection");
+    // matchTimer = new Timer();
+    // matchTimerRemaining = 150;
   }
   private Command m_autonomousCommand;
 
@@ -52,7 +72,9 @@ public class Robot extends TimedRobot {
   // public void disabledInit() {}
 
   @Override
-  public void disabledPeriodic() {}
+  public void disabledPeriodic() {
+    // matchTimer.stop();
+  }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
@@ -79,7 +101,7 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {}
-  // matchtTimer = 150 -(int) matchTimer.get();
+  // matchTimerRemaining = 150 -(int) matchTimer.get();
   @Override
   public void teleopInit() {
     // This makes sure that the autonomous stops running when
@@ -94,6 +116,19 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+
+
+    // if (joy1.getTriggerPressed()) {
+    //   System.out.println("Setting camera 2");
+    //   //cameraSelection.setString(camera2.getName());
+
+    //   //server.setSource(camera2);
+    // }else if (joy1.getTriggerReleased()) {
+    //   System.out.println("Setting Camera 1");
+    //   //server.setSource(camera1);
+    //   cameraSelection.setString(camera1.getName());
+    // }
+
     //RobotContainer.Test_controller();
   }
 

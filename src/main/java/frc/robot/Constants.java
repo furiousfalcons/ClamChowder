@@ -6,6 +6,8 @@ package frc.robot;
 
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
@@ -24,9 +26,6 @@ import edu.wpi.first.math.util.Units;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-
-  public static final int INTAKEOUTPUT_MOTOR_ID_1 = 13;
-  public static final int INTAKEOUTPUT_MOTOR_ID_2 = 4;
   public static final int ELEVATOR_MOTOR_ID =11;
   public static final int armMotorL = 9;
 
@@ -74,6 +73,8 @@ public final class Constants {
     // public static final int 
 
     public static final boolean kGyroReversed = false;
+    public static double kRotationalSlewRate;
+    public static double kMagnitudeSlewRate;
   }
 
   public static final class ModuleConstants {
@@ -147,5 +148,61 @@ public final class Constants {
 
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
+  }
+  
+  public static final class ArmConstants{
+    public static final double ARM_REST_POSITION = 1;
+    public static final double ARM_ALGEA_POSITION = 100;
+    public static final double ARM_CORAL_POSITION = 55;
+    public static final double ARM_CORAL_LOADING_POSITION = 145;
+  }
+
+  public static final class ElevatorConstants{
+    public static final double L1_CORAL = 1;
+    public static final double L2_CORAL = 45;
+    public static final double L3_CORAL = 95;
+    public static final double L2_ALGEA = 45;
+    public static final double L3_ALGEA = 85;
+    public static final double AMP_ALGEA = 1;
+    public static final double BARGE_ALGEA = 99;
+    public static final double ELEVATOR_REST = 10;
+    public static final double MAX_ELEVATOR_VOLTAGE = 12;
+  }
+
+    public static final class VisionConstants {
+    public static final double alignSpeed = -.5;
+    public static final double alignRange = 5;
+    public static final double closeAlignSpeed = -.25;
+    public static final double closeAlignRange = 1;
+
+    // AprilTag layout
+    public static AprilTagFieldLayout aprilTagLayout =
+        AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
+
+    // Camera names, must match names configured on coprocessor
+    public static String camera0Name = "limelight-bottom";
+    public static String camera1Name = "limelight-top";
+
+    // Basic filtering thresholds
+    public static double maxAmbiguity = 0.3;
+    public static double maxZError = 0.75;
+
+    // Standard deviation baselines, for 1-meter distance and 1 tag
+    // (Adjusted automatically based on distance and # of tags)
+    public static double linearStdDevBaseline = 0.02; // Meters
+    public static double angularStdDevBaseline = 0.06; // Radians
+
+    // Standard deviation multipliers for each camera
+    // (Adjust to trust some cameras more than others)
+    public static double[] cameraStdDevFactors =
+        new double[] {
+          1.0, // Camera 0
+          1.0 // Camera 1
+        };
+
+    // Multipliers to apply for MegaTag 2 observations
+    public static double linearStdDevMegatag2Factor = 0.5; // More stable than full 3D solve
+    public static double angularStdDevMegatag2Factor =
+        Double.POSITIVE_INFINITY; // No rotation data available
   }
 }

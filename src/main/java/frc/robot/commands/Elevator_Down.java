@@ -23,6 +23,7 @@ public void initialize() {
 // Called every time the scheduler runs while the command is scheduled.
 @Override
 public void execute() {
+  lift.elevatorDown();
     // lift.toggleDown(i);
     // System.out.println(i);
     // i++;
@@ -37,4 +38,5 @@ public void end(boolean interrupted) {}
 public boolean isFinished() {
 return false;
 }
+
 }

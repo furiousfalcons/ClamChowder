@@ -6,6 +6,8 @@ package frc.robot;
 
 import java.util.List;
 
+import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 import com.pathplanner.lib.commands.PathPlannerAuto;
@@ -29,8 +31,10 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
+import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.OIConstants;
 import frc.robot.commands.ClimbON;
 import frc.robot.commands.ClimbStop;
@@ -39,6 +43,7 @@ import frc.robot.commands.Elevator_Up;
 import frc.robot.commands.Elevator_Down;
 import frc.robot.commands.IntakeIn;
 import frc.robot.commands.IntakeOut;
+import frc.robot.commands.MasterCommands;
 import frc.robot.commands.Stop_Arm;
 import frc.robot.commands.Stop_Intake;
 import frc.robot.commands.Up_Arm;
@@ -56,7 +61,6 @@ import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
 
-import com.pathplanner.lib.auto.AutoBuilder;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -66,12 +70,14 @@ import com.pathplanner.lib.auto.AutoBuilder;
  */
 public class RobotContainer {
 
-  private final SendableChooser<Command> autoChooser;
+  private final InTakeOutPut intake;
+  private final Arm arms;
+  private final Elevator elevator;
   // The robot's subsystems
     private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private Arm arm = new Arm();
   private InTakeOutPut intakeShooter = new InTakeOutPut();
   private Elevator climb = new Elevator();
+  private Arm arm = new Arm();
    private Climb goClimb = new Climb();
   private final IntakeIn inTake = new IntakeIn(intakeShooter);
   private final IntakeOut shoot = new IntakeOut(intakeShooter);
@@ -83,7 +89,7 @@ public class RobotContainer {
   private final Down_Arm armDown = new Down_Arm(arm);
   private final Stop_Arm armStop = new Stop_Arm(arm);
  
-
+  private final SendableChooser<Command> autoChooser;
 
   // The driver's controller
   static XboxController m_driverController1 = new XboxController(OIConstants.kDriverControllerPort);
@@ -93,6 +99,67 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+
+intake = new InTakeOutPut();
+elevator = new Elevator();
+arms = new Arm();
+
+NamedCommands.registerCommand("Stop Intake", MasterCommands.stopIntake(intake));
+NamedCommands.registerCommand("Run Intake", MasterCommands.runIntake(intake));
+NamedCommands.registerCommand("Run Output", MasterCommands.runOutPut(intake));
+
+// NamedCommands.registerCommand("Set Arm Position", MasterCommands.setArmPosition(arms, elevator));
+
+// NamedCommands.registerCommand(
+//             "Set Elevator L1 C",
+//             MasterCommands.setElevatorPosition(
+//                 arms,
+//                 elevator,
+//                 ElevatorConstants.L1_CORAL,
+//                 ArmConstants.ARM_REST_POSITION));
+
+//                 NamedCommands.registerCommand(
+//             "Set Elevator L2 C",
+//             MasterCommands.setElevatorPosition(
+//                 arms,
+//                 elevator,
+//                 ElevatorConstants.L2_CORAL,
+//                 ArmConstants.ARM_CORAL_POSITION));
+
+//                  NamedCommands.registerCommand(
+//                   "Set Elevator L3 C",
+//                   MasterCommands.setElevatorPosition(
+//                       arms,
+//                       elevator,
+//                       ElevatorConstants.L3_CORAL,
+//                       ArmConstants.ARM_CORAL_POSITION));
+
+//                       NamedCommands.registerCommand(
+//                   "Set Elevator L2 A",
+//                   MasterCommands.setElevatorPosition(
+//                       arms,
+//                       elevator,
+//                       ElevatorConstants.L2_ALGEA,
+//                       ArmConstants.ARM_ALGEA_POSITION));
+
+//                       NamedCommands.registerCommand(
+//                   "Set Elevator L3 A",
+//                   MasterCommands.setElevatorPosition(
+//                       arms,
+//                       elevator,
+//                       ElevatorConstants.L3_ALGEA,
+//                       ArmConstants.ARM_ALGEA_POSITION));
+
+//                       NamedCommands.registerCommand(
+//                   "Set Elevator Amp A",
+//                   MasterCommands.setElevatorPosition(
+//                       arms,
+//                       elevator,
+//                       ElevatorConstants.AMP_ALGEA,
+//                       ArmConstants.ARM_REST_POSITION));
+
+
+                      
 
       // boolean isCompetition = true;
       // autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
@@ -128,9 +195,10 @@ public class RobotContainer {
             -MathUtil.applyDeadband(m_driverController1.getRightTriggerAxis(), 0.05)
           ), 
         climb));
-    
-        autoChooser = AutoBuilder.buildAutoChooser();
-        SmartDashboard.putData("Auto Mode", autoChooser);
+           autoChooser = AutoBuilder.buildAutoChooser();
+           SmartDashboard.putData("Auto Chooser", autoChooser);
+
+
 
         // arm.setDefaultCommand(
         //   new RunCommand(
@@ -150,7 +218,7 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
 
-      SmartDashboard.putData("Straight Auto.auto", new PathPlannerAuto("Straight Auto.auto"));
+      // SmartDashboard.putData("Straight Auto.auto", new PathPlannerAuto("Testing"));
 
       JoystickButton shootButton = new JoystickButton(m_driverController1, 3);
       JoystickButton armUpButton = new JoystickButton(m_driverController1, 4);
@@ -220,6 +288,7 @@ public class RobotContainer {
       // // Run path following command, then stop at the end.
       // return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
 
+      // return autoChooser.get();
       return autoChooser.getSelected();
     }
   // *  return null;}
