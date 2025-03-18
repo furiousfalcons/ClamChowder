@@ -17,15 +17,14 @@ import frc.robot.Constants;
 
 
 public class Elevator extends SubsystemBase{
-   private SparkMax elevatorMotor;  
-   private static final double ELEVATOR_UP_SPEED = -1;
-   private static final double ELEVATOR_DOWN_SPEED = 1;
-   private static final double HOLD_POWER = 0;
-   private static final double MOVE_TIME = 1;
-   private final Timer timer = new Timer();
-   public int i = 0;
-   public boolean isUp;
-
+   private SparkMax elevatorMotor;
+    private static final double ELEVATOR_UP_SPEED = -1;
+    private static final double ELEVATOR_DOWN_SPEED = 1;
+    private static final double HOLD_POWER = 0;
+    private static final double MOVE_TIME = 1;
+    private final Timer timer = new Timer();
+    public int i = 0;
+    public boolean isUp;
 
 
     public Elevator(){
@@ -39,7 +38,8 @@ public class Elevator extends SubsystemBase{
         elevatorMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
- // public void toggleUp(int num){ // move up or
+    // public void toggleUp(int num){ // move up or
+
         
     //         if(num%2 == 0){
     //     elevatorMotor.set(ELEVATOR_UP_SPEED);
@@ -71,7 +71,24 @@ public class Elevator extends SubsystemBase{
         } else {
             elevatorMotor.set(HOLD_POWER);
         }
+
+
     }
+    
+    // this goes somewhere in teleop or wherever the robot actually works i think
+    // public void update() {
+    //     if (timer.get() >= MOVE_TIME) {
+    //         if (isUp) {
+    //             elevatorMotor.set(HOLD_POWER); // Apply hold power to keep the elevator up
+    //         } else {
+    //             elevatorMotor.set(0); // Stop the motor completely when down
+    //         };
+    //         isUp = !isUp;
+    //         timer.stop();
+    //     }
+    // }
+    // at the end it should always go down so it matches isUp = false when the code starts running but idk where to put that
+
 
     // this goes somewhere in teleop or wherever the robot actually works i think
     // public void update() {

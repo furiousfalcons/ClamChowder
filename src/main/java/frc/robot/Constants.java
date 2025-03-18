@@ -30,8 +30,8 @@ public final class Constants {
   public static final int ELEVATOR_MOTOR_ID =11;
   public static final int armMotorL = 9;
   
-  public static final double inTakeMotorSpeed = .75; 
-  public static final double shootMotorSpeed = .75;
+  public static final double inTakeMotorSpeed = .25; 
+  public static final double shootMotorSpeed = .25;
 
   public static final int armEncoder = 0;
 
@@ -69,6 +69,8 @@ public final class Constants {
     public static final int kRearLeftTurningCanId = 3;
     public static final int kFrontRightTurningCanId = 5;
     public static final int kRearRightTurningCanId = 7;
+
+    // public static final int 
 
     public static final boolean kGyroReversed = false;
   }

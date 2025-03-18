@@ -15,7 +15,10 @@ public class Down_Arm extends Command {
      public int i = 2;
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    // arm.armDown();
+
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override

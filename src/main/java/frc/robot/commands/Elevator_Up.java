@@ -24,7 +24,7 @@ public void initialize() {
 // Called every time the scheduler runs while the command is scheduled.
 @Override
 public void execute() {
-    // lift.toggleUp(i);
+  // lift.toggleUp(i);
   // System.out.println(i);
   // i++;
 }
@@ -33,6 +33,7 @@ public void execute() {
 @Override
 public void end(boolean interrupted) 
 {
+
 }
 
 // Returns true when the command should end.

@@ -24,15 +24,9 @@ public class IntakeOut extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    // arm.armUp(i);
-    // i++;
-    arm.armUp();
+    intakeOutPut.OutPut();
+  }
 
-    // arm.armUp();
-    arm.armUp();
-
-    // arm.moveArmUp();  
-    }
 
   // Called once the command ends or is interrupted.
   @Override

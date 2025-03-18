@@ -4,10 +4,19 @@
 
 package frc.robot;
 
+import java.nio.channels.NetworkChannel;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
+import edu.wpi.first.cscore.VideoSource.ConnectionStrategy;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.RobotContainer;
+import edu.wpi.first.cscore.VideoSink;
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -16,6 +25,20 @@ import frc.robot.RobotContainer;
  * project.
  */
 public class Robot extends TimedRobot {
+  UsbCamera camera1;
+  UsbCamera camera2;
+  VideoSink server;
+  NetworkTableEntry cameraSelection;
+  Joystick joy1 = new Joystick(0);
+  public Robot() {
+    camera1 = CameraServer.startAutomaticCapture(0);
+    camera2 = CameraServer.startAutomaticCapture(1);
+    server = CameraServer.getServer();
+    camera1.setConnectionStrategy(ConnectionStrategy.kKeepOpen);
+    camera2.setConnectionStrategy(ConnectionStrategy.kKeepOpen);
+    //cameraSelection = NetworkTableInstance.getDefault().getTable("").getEntry("CameraSelection");
+
+  }
   private Command m_autonomousCommand;
 
   /**
@@ -44,8 +67,8 @@ public class Robot extends TimedRobot {
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
-  @Override
-  public void disabledInit() {}
+  // @Override
+  // public void disabledInit() {}
 
   @Override
   public void disabledPeriodic() {}
@@ -53,7 +76,14 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {  
-
+  // autonomousCommand = robotContainter.getAutonomousCommand();
+  // matchTimer.reset();
+  // matchTimer.start();
+  // //scheule command
+  // if (m_autonomousCommand != null) {
+  //   m_autonomousCommand.schedule();
+  //   }
+  }
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector",
      * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
@@ -62,15 +92,13 @@ public class Robot extends TimedRobot {
      */
 
     // schedule the autonomous command (example)
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
-    }
-  }
+  
+  
 
   /** This function is called periodically during autonomous. */
   @Override
   public void autonomousPeriodic() {}
-
+  // matchtTimer = 150 -(int) matchTimer.get();
   @Override
   public void teleopInit() {
     // This makes sure that the autonomous stops running when
@@ -85,6 +113,17 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during operator control. */
   @Override
   public void teleopPeriodic() {
+    // if (joy1.getTriggerPressed()) {
+    //   System.out.println("Setting camera 2");
+    //   //cameraSelection.setString(camera2.getName());
+
+    //   //server.setSource(camera2);
+    // }else if (joy1.getTriggerReleased()) {
+    //   System.out.println("Setting Camera 1");
+    //   //server.setSource(camera1);
+    //   cameraSelection.setString(camera1.getName());
+    // }
+
     //RobotContainer.Test_controller();
   }
 

@@ -19,20 +19,20 @@ public class Up_Arm extends Command {
      // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    
+
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-        // arm.armUp(i);
+    // arm.armUp(i);
     // i++;
   arm.armUp();
 
-  // arm.armUp();
-  arm.armUp();
+    // arm.armUp();
+    arm.armUp();
 
-  // arm.moveArmUp();
+    // arm.moveArmUp();
   }
 
   // Called once the command ends or is interrupted.
