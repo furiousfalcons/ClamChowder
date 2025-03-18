@@ -150,8 +150,6 @@ public class RobotContainer {
      */
     private void configureButtonBindings() {
 
-      SmartDashboard.putData("Straight Auto.auto", new PathPlannerAuto("Straight Auto.auto"));
-
       JoystickButton shootButton = new JoystickButton(m_driverController2, 3);
       JoystickButton armUpButton = new JoystickButton(m_driverController2, 4);
       JoystickButton armDownButton = new JoystickButton(m_driverController2, 1);

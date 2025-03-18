@@ -25,7 +25,7 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
 
-  public static final int INTAKEOUTPUT_MOTOR_ID_1 = 13;
+  public static final int INTAKEOUTPUT_MOTOR_ID_1 = 15;
   public static final int INTAKEOUTPUT_MOTOR_ID_2 = 4;
   public static final int ELEVATOR_MOTOR_ID =11;
   public static final int armMotorL = 9;
@@ -67,7 +67,7 @@ public final class Constants {
 
     public static final int kFrontLeftTurningCanId = 12;
     public static final int kRearLeftTurningCanId = 3;
-    public static final int kFrontRightTurningCanId = 5;
+    public static final int kFrontRightTurningCanId = 5;  
     public static final int kRearRightTurningCanId = 7;
 
     // public static final int 
