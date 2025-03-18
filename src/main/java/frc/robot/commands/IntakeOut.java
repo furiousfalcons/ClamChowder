@@ -5,7 +5,6 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import frc.robot.subsystems.InTakeOutPut;
 
-
 public class IntakeOut extends Command {
   /** Creates a new ClawGrab. */
   InTakeOutPut intakeOutPut;
@@ -27,6 +26,7 @@ public class IntakeOut extends Command {
   public void execute() {
     intakeOutPut.OutPut();
   }
+
 
   // Called once the command ends or is interrupted.
   @Override

@@ -33,7 +33,7 @@ public void execute() {
 @Override
 public void end(boolean interrupted) 
 {
-  // lift.stopToggle();
+
 }
 
 // Returns true when the command should end.

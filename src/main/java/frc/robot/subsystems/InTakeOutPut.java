@@ -22,6 +22,7 @@ public class InTakeOutPut extends SubsystemBase{
     int proximity;
 
     public InTakeOutPut() {
+
         //work on the next line(WIP)
         intakeOutPutMotor = new SparkMax(Constants.INTAKEOUTPUT_MOTOR_ID_1, MotorType.kBrushless); 
         intakeOutPutMotor2 = new SparkMax(14, MotorType.kBrushless);
@@ -32,7 +33,7 @@ public class InTakeOutPut extends SubsystemBase{
     // }
 
     public void intake() {
-  
+
         intakeOutPutMotor.set(-Constants.inTakeMotorSpeed);
         intakeOutPutMotor2.set(Constants.inTakeMotorSpeed);
     }
@@ -41,8 +42,7 @@ public class InTakeOutPut extends SubsystemBase{
  
         intakeOutPutMotor.set(Constants.inTakeMotorSpeed);
         intakeOutPutMotor2.set(-Constants.inTakeMotorSpeed);
-    
- }
+
 
  public void stop() {
     isOutPutting = false;

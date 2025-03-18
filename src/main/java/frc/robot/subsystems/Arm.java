@@ -41,10 +41,9 @@ private AbsoluteEncoder armEncoder;
     public Arm(){
 
         
-
         armMotorL = new SparkMax(4, MotorType.kBrushed);
         // armEncoder = armMotorL.getAbsoluteEncoder();
-        
+
 
         // pidController = new PIDController(0.011, 0.000, 0.000);
         // pidController.setTolerance(2.0);
@@ -55,7 +54,6 @@ private AbsoluteEncoder armEncoder;
         // config.idleMode(IdleMode.kBrake);
         // config.closedLoop.pid(0.011, 0.0, 0.0);
 
-        
 
         // pidController.setSetpoint(20);
         // armMotorL.setCANTimeout(250);
@@ -71,6 +69,8 @@ private AbsoluteEncoder armEncoder;
 
     public void armDown() {
         armMotorL.set(-0.1);
+=======
+        armMotorL.setCANTimeout(250);
 
     }
 
