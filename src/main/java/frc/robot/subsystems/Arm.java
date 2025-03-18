@@ -69,8 +69,6 @@ private AbsoluteEncoder armEncoder;
 
     public void armDown() {
         armMotorL.set(-0.1);
-=======
-        armMotorL.setCANTimeout(250);
 
     }
 

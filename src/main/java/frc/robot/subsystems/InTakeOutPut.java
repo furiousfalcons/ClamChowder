@@ -42,6 +42,7 @@ public class InTakeOutPut extends SubsystemBase{
  
         intakeOutPutMotor.set(Constants.inTakeMotorSpeed);
         intakeOutPutMotor2.set(-Constants.inTakeMotorSpeed);
+ }
 
 
  public void stop() {
