@@ -118,9 +118,9 @@ public class Robot extends TimedRobot {
   public void teleopPeriodic() {
 
 
-    // if (joy1.getTriggerPressed()) {
-    //   System.out.println("Setting camera 2");
-    //   //cameraSelection.setString(camera2.getName());
+   // if (joy1.getTriggerPressed()) {
+  //System.out.println("Setting camera 2");
+  //cameraSelection.setString(camera2.getName());
 
     //   //server.setSource(camera2);
     // }else if (joy1.getTriggerReleased()) {

@@ -111,6 +111,7 @@ public class Elevator extends SubsystemBase{
     public void elevatorUp(){
         elevatorMotor.set(ELEVATOR_UP_SPEED);
     }
+}
 
 
     // public double getPosition() {
@@ -140,7 +141,6 @@ public class Elevator extends SubsystemBase{
     
 //     private void setElevatorVoltage(double voltage) {}
 
-}
 
 
 
@@ -159,8 +159,3 @@ public class Elevator extends SubsystemBase{
     //     }
     // }
     // at the end it should always go down so it matches isUp = false when the code starts running but idk where to put that
-
-    
-
-
-    
