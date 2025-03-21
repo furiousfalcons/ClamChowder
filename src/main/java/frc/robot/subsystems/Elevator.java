@@ -30,23 +30,25 @@ public class Elevator extends SubsystemBase{
     public int i = 0;
     public boolean isUp;
     public boolean isDown;
-    public final double minPosition = 0.1;
-    public final double maxPosition = 5.5; //Diff: 6.43
+    public final double minPosition = 0.2;
+    public final double maxPosition = 6.0; //Diff: 6.43
 
     public Elevator(){
 
 
-
+        
         elevatorMotor = new SparkMax(Constants.ELEVATOR_MOTOR_ID, MotorType.kBrushed);
         relativeEncoder = elevatorMotor.getEncoder();
         pidController = new PIDController(0.11, 0.0, 0.0);
         pidController.setTolerance(0.3);
+        pidController.setSetpoint(maxPosition);
 
 
         SparkMaxConfig config = new SparkMaxConfig();
         //config.inverted(true);
         config.idleMode(IdleMode.kBrake);
         config.smartCurrentLimit(40);
+
 
         elevatorMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
@@ -94,27 +96,29 @@ public class Elevator extends SubsystemBase{
 
     public void elevatorUp(){
         pidController.setSetpoint(maxPosition);
+        System.out.println("Up");
 
-        if((pidController.getSetpoint() <= Math.abs(relativeEncoder.getPosition())) == false){
-            elevatorMotor.set(ELEVATOR_DOWN_SPEED);
-        } else if((pidController.getSetpoint() <= Math.abs(relativeEncoder.getPosition())) == true){
+        if(pidController.getSetpoint() > Math.abs(relativeEncoder.getPosition())){
+            elevatorMotor.set(ELEVATOR_UP_SPEED);
+        } else if((pidController.getSetpoint() < Math.abs(relativeEncoder.getPosition()))){
             elevatorMotor.set(HOLD_POWER);
         }
     }
 
     public void elevatorDown(){
         pidController.setSetpoint(minPosition);
+        System.out.println("Down");
 
-        if((pidController.getSetpoint() >= Math.abs(relativeEncoder.getPosition())) == false){
-            elevatorMotor.set(ELEVATOR_UP_SPEED);
-        } else if((pidController.getSetpoint() <= Math.abs(relativeEncoder.getPosition())) == true){
+        if(pidController.getSetpoint() < Math.abs(relativeEncoder.getPosition())){
+            elevatorMotor.set(ELEVATOR_DOWN_SPEED);
+        } else if(pidController.getSetpoint() > Math.abs(relativeEncoder.getPosition())){
             elevatorMotor.set(HOLD_POWER);
         }
     }
 
     @Override
     public void periodic(){
-        System.out.println(relativeEncoder.getPosition() + "  " + (pidController.getSetpoint() >= relativeEncoder.getPosition()));
+        // System.out.println(Math.abs(relativeEncoder.getPosition()) + "  " + (pidController.getSetpoint() >= relativeEncoder.getPosition()));
     }
     
     public void update() {

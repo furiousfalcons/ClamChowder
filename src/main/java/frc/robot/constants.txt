@@ -1,0 +1,19 @@
+Elevator
+
+L1-Coral
+L2-Coral
+L3-Coral
+L2-Algea
+L3-Algea
+Amp-Algea
+Rest
+Intake
+
+----------------------------
+
+Arm
+
+Rest
+Algea L3
+Coral Intake
+Coral Scoring

@@ -154,8 +154,8 @@ public class RobotContainer {
       JoystickButton armUpButton = new JoystickButton(m_driverController2, 4);
       JoystickButton armDownButton = new JoystickButton(m_driverController2, 1);
       JoystickButton inTakeButton = new JoystickButton(m_driverController2, 2);
-       JoystickButton climbButton = new JoystickButton(m_driverController2, 5);
-      JoystickButton climbButton2 = new JoystickButton(m_driverController2, 6);
+       JoystickButton climbButton = new JoystickButton(m_driverController2, 6);
+      JoystickButton climbButton2 = new JoystickButton(m_driverController2, 5);
       climbButton2.toggleOnTrue(climb_p);
       climbButton.toggleOnTrue(climb_r);
       climbButton2.toggleOnFalse(climb_f);

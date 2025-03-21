@@ -29,6 +29,8 @@ public class Robot extends TimedRobot {
   UsbCamera camera2;
   VideoSink server;
   NetworkTableEntry cameraSelection;
+  RobotContainer robotContainer;
+  Command autonomousCommand;
   Joystick joy1 = new Joystick(0);
   public Robot() {
     camera1 = CameraServer.startAutomaticCapture(0);
@@ -39,7 +41,7 @@ public class Robot extends TimedRobot {
     //cameraSelection = NetworkTableInstance.getDefault().getTable("").getEntry("CameraSelection");
 
   }
-  private Command m_autonomousCommand;
+   
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -47,7 +49,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    new RobotContainer();
+    robotContainer = new RobotContainer();
   }
 
   /**
@@ -76,13 +78,13 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {  
-  // autonomousCommand = robotContainter.getAutonomousCommand();
+  autonomousCommand = robotContainer.getAutonomousCommand();
   // matchTimer.reset();
   // matchTimer.start();
   // //scheule command
-  // if (m_autonomousCommand != null) {
-  //   m_autonomousCommand.schedule();
-  //   }
+  if (autonomousCommand != null) {
+    autonomousCommand.schedule();
+    }
   }
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector",
@@ -105,8 +107,8 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
+    if (autonomousCommand != null) {
+      autonomousCommand.cancel();
     }
   }
 
