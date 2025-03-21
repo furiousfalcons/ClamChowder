@@ -22,7 +22,7 @@ import frc.robot.Constants.ElevatorConstants;
 
 public class Elevator extends SubsystemBase{
    private SparkMax elevatorMotor;
-    //    private final RelativeEncoder elevatorEncoder;
+       private final RelativeEncoder elevatorEncoder;
     private static final double ELEVATOR_UP_SPEED = -1;
     private static final double ELEVATOR_DOWN_SPEED = 1;
     private static final double HOLD_POWER = 0;
@@ -30,43 +30,42 @@ public class Elevator extends SubsystemBase{
     private final Timer timer = new Timer();
     public int i = 0;
     public boolean isUp;
-    // private double targetPosition;
-    // private double targetSpeed = 0;
-    // private final PIDController pidController;
-    // private ArmFeedforward feedForward;
+    private double targetPosition;
+    private double targetSpeed = 0;
+    private final PIDController pidController;
+    private ArmFeedforward feedForward;
 
     public Elevator(){
         elevatorMotor = new SparkMax(Constants.ELEVATOR_MOTOR_ID, MotorType.kBrushed);
-        // elevatorEncoder = elevatorMotor.getEncoder();
+        elevatorEncoder = elevatorMotor.getEncoder();
 
-    //     pidController = new PIDController(2.5, 0, 0.1);
-    //     pidController.setTolerance(.25);
-    //     resetPosition();
-    //     feedForward =
-    //         new ArmFeedforward(0.11237, 0.76416, 0.56387, 0.041488);
+        pidController = new PIDController(2.5, 0, 0.1);
+        pidController.setTolerance(.25);
+        feedForward =
+            new ArmFeedforward(0.11237, 0.76416, 0.56387, 0.041488);
     
-    //         SparkMaxConfig config = new SparkMaxConfig();
-    //         //config.inverted(true);
-    //         config.idleMode(IdleMode.kBrake);
-    //         config.smartCurrentLimit(40);
+            SparkMaxConfig config = new SparkMaxConfig();
+            //config.inverted(true);
+            config.idleMode(IdleMode.kBrake);
+            config.smartCurrentLimit(40);
     
-    //         elevatorMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-    //     }
+            elevatorMotor.configure(config, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        }
 
-    // public void periodic() {
-    //     Logger.recordOutput("Elevator Position", getPosition());
+    public void periodic() {
+        Logger.recordOutput("Elevator Position", getPosition());
 
-    //     double pidMotorSpeed = 
-    //         pidController.calculate(getPosition(), targetPosition)
-    //             + feedForward.calculate(targetPosition, 0);
-    //         Logger.recordOutput("PID Speed", pidMotorSpeed);
-    //         Logger.recordOutput("Manual Speed" , targetSpeed);
+        double pidMotorSpeed = 
+            pidController.calculate(getPosition(), targetPosition)
+                + feedForward.calculate(targetPosition, 0);
+            Logger.recordOutput("PID Speed", pidMotorSpeed);
+            Logger.recordOutput("Manual Speed" , targetSpeed);
 
-    //         setMotor(
-    //             MathUtil.clamp(
-    //             (pidMotorSpeed),
-    //              -ElevatorConstants.MAX_ELEVATOR_VOLTAGE,
-    //               ElevatorConstants.MAX_ELEVATOR_VOLTAGE));
+            setMotor(
+                MathUtil.clamp(
+                (pidMotorSpeed),
+                 -ElevatorConstants.MAX_ELEVATOR_VOLTAGE,
+                  ElevatorConstants.MAX_ELEVATOR_VOLTAGE));
             
     }
     
@@ -111,17 +110,37 @@ public class Elevator extends SubsystemBase{
     public void elevatorUp(){
         elevatorMotor.set(ELEVATOR_UP_SPEED);
     }
+
+    public void setPosition(double position) {
+        Logger.recordOutput("ElevatorTargetPosition", position);
+        targetPosition = position;
+    }
+
+    public double getPosition() {
+        return elevatorEncoder.getPosition();
+    }
+
+
+public void setSpeed(double speed) {
+    targetSpeed = speed;
+}
+
+public void setElevatorSetpoint(double offset) {
+    setPosition(getPosition() + offset);
+}
+
+public void setMotor(double voltage) {
+    setElevatorVoltage(voltage);
+    }
+    
+    private void setElevatorVoltage(double voltage) {}
+    
 }
 
 
-    // public double getPosition() {
-    //     return elevatorEncoder.getPosition();
-    // }
+  
 
-// public void setPosition(double position) {
-//     Logger.recordOutput("ElevatorTargetPosition", position);
-//     targetPosition = position;
-// }
+
 
 // public void resetPosition() {
 //     resetPosition();

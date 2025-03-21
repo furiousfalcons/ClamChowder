@@ -3,10 +3,10 @@
 // the WPILib BSD license file in the root directory of this project.
 
 package frc.robot;
-
 import java.util.List;
 
 import org.littletonrobotics.junction.networktables.LoggedDashboardChooser;
+import org.photonvision.PhotonCamera;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
@@ -39,6 +39,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.commands.ClimbON;
 import frc.robot.commands.ClimbStop;
 import frc.robot.commands.Down_Arm;
+import frc.robot.commands.DriveToTrackedTargetCommand;
 import frc.robot.commands.Elevator_Up;
 import frc.robot.commands.Elevator_Down;
 import frc.robot.commands.IntakeIn;
@@ -49,17 +50,21 @@ import frc.robot.commands.Stop_Intake;
 import frc.robot.commands.Up_Arm;
 import frc.robot.commands.climbDown;
 import frc.robot.subsystems.Arm;
-import frc.robot.commands.ClimbON;
-import frc.robot.commands.ClimbStop;
 import frc.robot.subsystems.Climb;
+import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.InTakeOutPut;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
-import java.util.List;
+import frc.robot.subsystems.vision.Vision;
+import frc.robot.subsystems.vision.VisionIO;
+import frc.robot.subsystems.vision.VisionIOPhotonVision;
+import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
+
 
 
 /*
@@ -69,25 +74,28 @@ import java.util.List;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
-
   private final InTakeOutPut intake;
-  private final Arm arms;
+  private final Arm arm;
   private final Elevator elevator;
   // The robot's subsystems
-    private final DriveSubsystem m_robotDrive = new DriveSubsystem();
-  private InTakeOutPut intakeShooter = new InTakeOutPut();
-  private Elevator climb = new Elevator();
-  private Arm arm = new Arm();
+    public final static DriveSubsystem m_robotDrive = new DriveSubsystem();
+    public static final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
+    public static boolean isTrackingEnabled = false; // toggle searching for april tags
+  // private InTakeOutPut intakeShooter = new InTakeOutPut();
+  // private Elevator climb = new Elevator();
+  // private Arm arm = new Arm();
    private Climb goClimb = new Climb();
-  private final IntakeIn inTake = new IntakeIn(intakeShooter);
-  private final IntakeOut shoot = new IntakeOut(intakeShooter);
+  // private final IntakeIn inTake = new IntakeIn(intakeShooter);
+  // private final IntakeOut shoot = new IntakeOut(intakeShooter);
   private final climbDown climb_p = new climbDown(goClimb);
   private final ClimbON climb_r = new ClimbON(goClimb);
   private final ClimbStop climb_f = new ClimbStop(goClimb);
-  private final Stop_Intake stopIntake = new Stop_Intake(intakeShooter);
-   private final Up_Arm armUp = new Up_Arm(arm);
-  private final Down_Arm armDown = new Down_Arm(arm);
-  private final Stop_Arm armStop = new Stop_Arm(arm);
+  // private final Stop_Intake stopIntake = new Stop_Intake(intakeShooter);
+  //  private final Up_Arm armUp = new Up_Arm(arm);
+  // private final Down_Arm armDown = new Down_Arm(arm);
+  // private final Stop_Arm armStop = new Stop_Arm(arm);
+   private final DriveToTrackedTargetCommand april = new DriveToTrackedTargetCommand(2, 3); // vision command
+
  
   private final SendableChooser<Command> autoChooser;
 
@@ -99,66 +107,72 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
-
 intake = new InTakeOutPut();
 elevator = new Elevator();
-arms = new Arm();
+arm = new Arm();
 
 NamedCommands.registerCommand("Stop Intake", MasterCommands.stopIntake(intake));
 NamedCommands.registerCommand("Run Intake", MasterCommands.runIntake(intake));
 NamedCommands.registerCommand("Run Output", MasterCommands.runOutPut(intake));
 
-// NamedCommands.registerCommand("Set Arm Position", MasterCommands.setArmPosition(arms, elevator));
+// NamedCommands.registerCommand("Set Arm Position", MasterCommands.setArmPosition(arm, elevator));
 
-// NamedCommands.registerCommand(
-//             "Set Elevator L1 C",
-//             MasterCommands.setElevatorPosition(
-//                 arms,
-//                 elevator,
-//                 ElevatorConstants.L1_CORAL,
-//                 ArmConstants.ARM_REST_POSITION));
+NamedCommands.registerCommand(
+            "Set Elevator L1 C",
+            MasterCommands.setElevatorPositionL1C(
+                arm,
+                elevator,
+                ElevatorConstants.L1_CORAL,
+                ArmConstants.ARM_REST_POSITION));
 
-//                 NamedCommands.registerCommand(
-//             "Set Elevator L2 C",
-//             MasterCommands.setElevatorPosition(
-//                 arms,
-//                 elevator,
-//                 ElevatorConstants.L2_CORAL,
-//                 ArmConstants.ARM_CORAL_POSITION));
+                NamedCommands.registerCommand(
+            "Set Elevator L2 C",
+            MasterCommands.setElevatorPositionL2C(
+                arm,
+                elevator,
+                ElevatorConstants.L2_CORAL,
+                ArmConstants.ARM_CORAL_POSITION));
 
-//                  NamedCommands.registerCommand(
-//                   "Set Elevator L3 C",
-//                   MasterCommands.setElevatorPosition(
-//                       arms,
-//                       elevator,
-//                       ElevatorConstants.L3_CORAL,
-//                       ArmConstants.ARM_CORAL_POSITION));
+                 NamedCommands.registerCommand(
+                  "Set Elevator L3 C",
+                  MasterCommands.setElevatorPositionL3C(
+                      arm,
+                      elevator,
+                      ElevatorConstants.L3_CORAL,
+                      ArmConstants.ARM_CORAL_POSITION));
 
-//                       NamedCommands.registerCommand(
-//                   "Set Elevator L2 A",
-//                   MasterCommands.setElevatorPosition(
-//                       arms,
-//                       elevator,
-//                       ElevatorConstants.L2_ALGEA,
-//                       ArmConstants.ARM_ALGEA_POSITION));
+                      NamedCommands.registerCommand(
+                  "Set Elevator L2 A",
+                  MasterCommands.setElevatorPositionL2A(
+                      arm,
+                      elevator,
+                      ElevatorConstants.L2_ALGEA,
+                      ArmConstants.ARM_ALGEA_POSITION));
 
-//                       NamedCommands.registerCommand(
-//                   "Set Elevator L3 A",
-//                   MasterCommands.setElevatorPosition(
-//                       arms,
-//                       elevator,
-//                       ElevatorConstants.L3_ALGEA,
-//                       ArmConstants.ARM_ALGEA_POSITION));
+                      NamedCommands.registerCommand(
+                  "Set Elevator L3 A",
+                  MasterCommands.setElevatorPositionL3A(
+                      arm,
+                      elevator,
+                      ElevatorConstants.L3_ALGEA,
+                      ArmConstants.ARM_ALGEA_POSITION));
 
-//                       NamedCommands.registerCommand(
-//                   "Set Elevator Amp A",
-//                   MasterCommands.setElevatorPosition(
-//                       arms,
-//                       elevator,
-//                       ElevatorConstants.AMP_ALGEA,
-//                       ArmConstants.ARM_REST_POSITION));
+                      NamedCommands.registerCommand(
+                  "Set Elevator Amp A",
+                  MasterCommands.setElevatorPositionLAA(
+                      arm,
+                      elevator,
+                      ElevatorConstants.AMP_ALGEA,
+                      ArmConstants.ARM_REST_POSITION));
+                        NamedCommands.registerCommand(
+                     "Set Elevator Amp A",
+                     MasterCommands.setElevatorPositionLI(
+                        arm,
+                        elevator,
+                        ElevatorConstants.ELEVATOR_INTAKE,
+                        ArmConstants.ARM_CORAL_LOADING_POSITION));
 
-
+                        
                       
 
       // boolean isCompetition = true;
@@ -188,23 +202,20 @@ NamedCommands.registerCommand("Run Output", MasterCommands.runOutPut(intake));
               new JoystickButton(m_driverController1, Button.kR3.value)
               .whileTrue(new RunCommand( () -> m_robotDrive.setX(), m_robotDrive));
 
-      climb.setDefaultCommand(
-        new RunCommand(
-          () -> climb.toggleElevator(
-            -MathUtil.applyDeadband(m_driverController2.getLeftTriggerAxis(), 0.05),
-            -MathUtil.applyDeadband(m_driverController2.getRightTriggerAxis(), 0.05)
-          ), 
-        climb));
+        
+
+      // elevator.setDefaultCommand(
+      //   new RunCommand(
+      //     () -> elevator.toggleElevator(
+      //       -MathUtil.applyDeadband(m_driverController2.getLeftTriggerAxis(), 0.05),
+      //       -MathUtil.applyDeadband(m_driverController2.getRightTriggerAxis(), 0.05)
+      //     ), 
+      //   elevator));
            autoChooser = AutoBuilder.buildAutoChooser();
            SmartDashboard.putData("Auto Chooser", autoChooser);
 
-
-
-        // arm.setDefaultCommand(
-        //   new RunCommand(
-        //     () -> arm.
-        //   )
-        // );
+ 
+// Real robot, instantiate hardware IO implementations
     }
   
     /**
@@ -220,24 +231,95 @@ NamedCommands.registerCommand("Run Output", MasterCommands.runOutPut(intake));
 
       // SmartDashboard.putData("Straight Auto.auto", new PathPlannerAuto("Testing"));
 
-      JoystickButton shootButton = new JoystickButton(m_driverController2, 3);
-      JoystickButton armUpButton = new JoystickButton(m_driverController2, 4);
-      JoystickButton armDownButton = new JoystickButton(m_driverController2, 1);
+      JoystickButton LAAButton = new JoystickButton(m_driverController2, 1);
       JoystickButton inTakeButton = new JoystickButton(m_driverController2, 2);
-       JoystickButton climbButton = new JoystickButton(m_driverController2, 5);
-      JoystickButton climbButton2 = new JoystickButton(m_driverController2, 6);
+      JoystickButton shootButton = new JoystickButton(m_driverController2, 3);
+      JoystickButton L3AButton = new JoystickButton(m_driverController2, 4);
+      JoystickButton L2AButton = new JoystickButton(m_driverController1, 5);
+      JoystickButton L1CButton = new JoystickButton(m_driverController1, 6);
+      JoystickButton L3CButton = new JoystickButton(m_driverController1, 7);
+      JoystickButton L2CButton = new JoystickButton(m_driverController1, 8);
+      JoystickButton LIButton = new JoystickButton(m_driverController1, 9);
+      JoystickButton toggleTrackingButton = new JoystickButton(m_driverController1, 1); // does this go here or with the other controller1 stuff
+
+       JoystickButton climbButton = new JoystickButton(m_driverController2, 11);
+      JoystickButton climbButton2 = new JoystickButton(m_driverController2, 12);
       climbButton2.whileTrue(climb_p);
       climbButton.whileTrue(climb_r);
       climbButton2.whileFalse(climb_f);
       climbButton.whileFalse(climb_f);
-      armUpButton.toggleOnTrue(armUp);
-      armDownButton.toggleOnTrue(armDown);
-      inTakeButton.whileTrue(inTake);
-      shootButton.whileTrue(shoot);
-      inTakeButton.whileFalse(stopIntake);
-      shootButton.whileFalse(stopIntake);
-      armUpButton.toggleOnFalse(armStop);
-      armDownButton.toggleOnFalse(armStop);
+
+       toggleTrackingButton.onTrue(new InstantCommand(() -> {  // toggle to turn on april tag detection
+            isTrackingEnabled = !isTrackingEnabled; // Toggle tracking
+            System.out.println("Tracking enabled: " + isTrackingEnabled);
+
+            if (isTrackingEnabled) {    
+                april.schedule(); // Start command
+            } else {
+                april.cancel(); // Stop command
+            }
+        }));
+
+
+
+      L3AButton
+      .onTrue(MasterCommands.setElevatorPositionL3A(
+        arm,
+        elevator,
+        ElevatorConstants.L3_ALGEA,
+        ArmConstants.ARM_ALGEA_POSITION));
+      LAAButton
+      .onTrue(MasterCommands.setElevatorPositionLAA(
+        arm,
+        elevator,
+        ElevatorConstants.AMP_ALGEA,
+        ArmConstants.ARM_REST_POSITION));
+
+      L2AButton
+      .onTrue(MasterCommands.setElevatorPositionLAA(
+          arm,
+          elevator,
+          ElevatorConstants.AMP_ALGEA,
+          ArmConstants.ARM_REST_POSITION));
+
+      L3CButton
+      .onTrue(MasterCommands.setElevatorPositionL3C(
+        arm,
+        elevator,
+        ElevatorConstants.L3_CORAL,
+        ArmConstants.ARM_CORAL_POSITION));
+
+      L2CButton
+      .onTrue(MasterCommands.setElevatorPositionL3C(
+        arm,
+        elevator,
+        ElevatorConstants.L3_CORAL,
+        ArmConstants.ARM_CORAL_POSITION));
+      
+      L1CButton
+      .onTrue(MasterCommands.setElevatorPositionL3C(
+        arm,
+        elevator,
+        ElevatorConstants.L1_CORAL,
+        ArmConstants.ARM_CORAL_POSITION));
+
+      LIButton
+      .onTrue(MasterCommands.setElevatorPositionLI(
+        arm,
+        elevator,
+        ElevatorConstants.ELEVATOR_INTAKE,
+        ArmConstants.ARM_CORAL_LOADING_POSITION));
+
+        
+
+      inTakeButton
+      .onTrue(MasterCommands.runIntake(intake))
+      .onFalse(MasterCommands.stopIntake(intake));
+
+      shootButton
+      .onTrue(MasterCommands.runOutPut(intake))
+      .onFalse(MasterCommands.stopIntake(intake));
+
 
     }
   
@@ -245,63 +327,7 @@ NamedCommands.registerCommand("Run Output", MasterCommands.runOutPut(intake));
      * Use this to pass the autonomous command to the main {@link Robot} class.
    * @return 
      */
-    
-    
-
     public Command getAutonomousCommand() {
-      //  // Create config for trajectory
-      //   TrajectoryConfig config = new TrajectoryConfig(
-      //     AutoConstants.kMaxSpeedMetersPerSecond,
-      //      AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-      //     // Add kinematics to ensure max speed is actually obeyed
-      //      .setKinematics(DriveConstants.kDriveKinematics);
-  
-      // // An example trajectory to follow. All units in meters.
-      // Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-      //     // Start at the origin facing the +X direction
-      //     new Pose2d(0, 0, new Rotation2d(0)),
-      //     // Pass through these two interior waypoints, making an 's' curve path
-      //     List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-      //     // End 3 meters straight ahead of where we started, facing forward
-      //     new Pose2d(3, 0, new Rotation2d(0)),
-      //     config);
-  
-      // var thetaController = new ProfiledPIDController(
-      //     AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-      // thetaController.enableContinuousInput(-Math.PI, Math.PI);
-  
-      // SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-      //     exampleTrajectory,
-      //     m_robotDrive::getPose, // Functional interface to feed supplier
-      //     DriveConstants.kDriveKinematics,
-  
-      //     // Position controllers
-      //     new PIDController(AutoConstants.kPXController, 0, 0),
-      //     new PIDController(AutoConstants.kPYController, 0, 0),
-      //     thetaController,
-      //     m_robotDrive::setModuleStates,
-      //     m_robotDrive);
-  
-      // // Reset odometry to the starting pose of the trajectory.
-      // m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
-   
-      // // Run path following command, then stop at the end.
-      // return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
-
-      // return autoChooser.get();
       return autoChooser.getSelected();
     }
-  // *  return null;}
-    public void logTheBits() {
-      // DriverStation.reportError(arm.getMeasurement()  +"", false);
-    }
-  
-    public static void Test_controller() {
-      // double potato = m_driverController.getLeftX();
-      // int i = 1;
-      // while (i < 5) {
-      //   System.out.println(potato);
-      //   i++;
-      // }
-  }
 }

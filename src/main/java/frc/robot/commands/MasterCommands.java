@@ -5,6 +5,7 @@ import static edu.wpi.first.wpilibj2.command.Commands.*;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants;
+import frc.robot.Constants.ArmConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Elevator;
@@ -45,5 +46,70 @@ public class MasterCommands {
 
     public static Command stopElevator(Elevator elevator) {
         return runOnce(() -> {elevator.stopToggle();}, elevator);
+    }
+
+    public static Command setElevatorPositionL1C(Arm arms, Elevator elevator, double l1Coral, double armRestPosition) {
+             return sequence(
+                runOnce(()-> arms.setPosition(Constants.ArmConstants.ARM_REST_POSITION), arms),
+                waitSeconds(0.25),
+                runOnce(() -> elevator.setPosition(Constants.ElevatorConstants.L1_CORAL), elevator),
+                waitSeconds(0.25),
+                runOnce(()-> arms.setPosition(Constants.ArmConstants.ARM_CORAL_POSITION), arms));  
+              }
+
+    public static Command setElevatorPositionL2C(Arm arms, Elevator elevator, double l2Coral, double armCoralPosition) {
+        return sequence(
+            runOnce(()-> arms.setPosition(Constants.ArmConstants.ARM_REST_POSITION), arms),
+            waitSeconds(0.25),
+            runOnce(() -> elevator.setPosition(Constants.ElevatorConstants.L2_CORAL), elevator),
+            waitSeconds(0.25),
+            runOnce(()-> arms.setPosition(Constants.ArmConstants.ARM_CORAL_POSITION), arms));  
+    }
+
+    public static Command setElevatorPositionL3C(Arm arms, Elevator elevator, double l3Coral, double armCoralPosition) {
+        return sequence(
+            runOnce(()-> arms.setPosition(Constants.ArmConstants.ARM_REST_POSITION), arms),
+            waitSeconds(0.25),
+            runOnce(() -> elevator.setPosition(Constants.ElevatorConstants.L3_CORAL), elevator),
+            waitSeconds(0.25),
+            runOnce(()-> arms.setPosition(Constants.ArmConstants.ARM_CORAL_POSITION), arms));  
+    }
+
+    public static Command setElevatorPositionL2A(Arm arms, Elevator elevator, double l2Algea, double armAlgeaPosition) {
+        return sequence(
+            runOnce(()-> arms.setPosition(Constants.ArmConstants.ARM_REST_POSITION), arms),
+            waitSeconds(0.25),
+            runOnce(() -> elevator.setPosition(Constants.ElevatorConstants.L2_ALGEA), elevator),
+            waitSeconds(0.25),
+            runOnce(()-> arms.setPosition(Constants.ArmConstants.ARM_ALGEA_POSITION), arms)); 
+    }
+
+    public static Command setElevatorPositionL3A(Arm arms, Elevator elevator, double l3Algea, double armAlgeaPosition) {
+        return sequence(
+            runOnce(()-> arms.setPosition(Constants.ArmConstants.ARM_REST_POSITION), arms),
+            waitSeconds(0.25),
+            runOnce(() -> elevator.setPosition(Constants.ElevatorConstants.L2_ALGEA), elevator),
+            waitSeconds(0.25),
+            runOnce(()-> arms.setPosition(Constants.ArmConstants.ARM_ALGEA_POSITION), arms)); 
+    }
+
+    public static Command setElevatorPositionLAA(Arm arms, Elevator elevator, double ampAlgea, double armRestPosition) {
+        return sequence(
+            runOnce(()-> arms.setPosition(Constants.ArmConstants.ARM_REST_POSITION), arms),
+            waitSeconds(0.25),
+            runOnce(() -> elevator.setPosition(Constants.ElevatorConstants.AMP_ALGEA), elevator),
+            waitSeconds(0.25),
+            runOnce(()-> arms.setPosition(Constants.ArmConstants.ARM_REST_POSITION), arms)); 
+    }
+
+    public static Command setElevatorPositionLI(Arm arms, Elevator elevator, double elevatorIntake,
+            double armCoralLoadingPosition) {
+        return sequence(
+            runOnce(()-> arms.setPosition(Constants.ArmConstants.ARM_REST_POSITION), arms),
+            waitSeconds(0.25),
+            runOnce(()-> elevator.setPosition(Constants.ElevatorConstants.ELEVATOR_INTAKE), elevator),
+            waitSeconds(0.25),
+            runOnce(()-> arms.setPosition(Constants.ArmConstants.ARM_CORAL_LOADING_POSITION), arms));
+    
     }
 }

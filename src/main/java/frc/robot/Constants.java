@@ -34,6 +34,13 @@ public final class Constants {
   public static final double shootMotorSpeed = .25;
 
   public static final int armEncoder = 0;
+public static final String USB_CAMERA_NAME = null;
+public static final double TRACKED_TAG_ROATION_KP = 0.02;
+public static final double TRACKED_TAG_AREA_DRIVE_KP = 0.3;
+public static final double CAMERA_HEIGHT_METERS = 0;
+public static final double TARGET_HEIGHT_METERS = 0.5;
+public static final double CAMERA_PITCH_RADIANS = 2.05;
+public static final double TRACKED_TAG_DISTANCE_DRIVE_KP = 0.04;
 
   
   public static final class DriveConstants {
@@ -153,8 +160,8 @@ public final class Constants {
   public static final class ArmConstants{
     public static final double ARM_REST_POSITION = 1;
     public static final double ARM_ALGEA_POSITION = 100;
-    public static final double ARM_CORAL_POSITION = 55;
-    public static final double ARM_CORAL_LOADING_POSITION = 145;
+    public static final double ARM_CORAL_POSITION = 0.865;
+    public static final double ARM_CORAL_LOADING_POSITION = 0.725;
   }
 
   public static final class ElevatorConstants{
@@ -167,21 +174,22 @@ public final class Constants {
     public static final double BARGE_ALGEA = 99;
     public static final double ELEVATOR_REST = 10;
     public static final double MAX_ELEVATOR_VOLTAGE = 12;
+    public static final double ELEVATOR_INTAKE = 30;
   }
 
     public static final class VisionConstants {
-    public static final double alignSpeed = -.5;
-    public static final double alignRange = 5;
-    public static final double closeAlignSpeed = -.25;
-    public static final double closeAlignRange = 1;
+      public static final double alignSpeed = -.5;
+      public static final double alignRange = 5;
+      public static final double closeAlignSpeed = -.25;
+      public static final double closeAlignRange = 1;
+      public static final double kP = .05;
 
     // AprilTag layout
     public static AprilTagFieldLayout aprilTagLayout =
         AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
 
     // Camera names, must match names configured on coprocessor
-    public static String camera0Name = "limelight-bottom";
-    public static String camera1Name = "limelight-top";
+    public static String camera0Name = "limelight-top";
 
     // Basic filtering thresholds
     public static double maxAmbiguity = 0.3;

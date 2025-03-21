@@ -11,12 +11,16 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.AlternateEncoderConfigAccessor;
 import com.revrobotics.spark.config.SparkMaxConfig;
+
+import org.littletonrobotics.junction.Logger;
+
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkClosedLoopController;
 
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.AnalogEncoder;
@@ -25,14 +29,19 @@ import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.Timer;
 import frc.robot.Constants;
+import frc.robot.Constants.ArmConstants;
+import frc.robot.Constants.ElevatorConstants;
 
 public class Arm extends SubsystemBase{
 
     private SparkMax armMotorL;
     // private DutyCycleEncoder armEncoder;
     // private Encoder armEncoder;
-private AbsoluteEncoder armEncoder;
-    // private final PIDController pidController;
+    private AbsoluteEncoder armEncoder;
+    private final PIDController pidController;
+      private ArmFeedforward feedForward;
+      private double targetPosition;
+
 
     private static final double ARM_SPEED = 0.5;
     private static final double MOVE_TIME = 1.5;
@@ -43,17 +52,20 @@ private AbsoluteEncoder armEncoder;
         
 
         armMotorL = new SparkMax(4, MotorType.kBrushed);
-        // armEncoder = armMotorL.getAbsoluteEncoder();
+        armEncoder = armMotorL.getAbsoluteEncoder();
         
 
-        // pidController = new PIDController(0.011, 0.000, 0.000);
-        // pidController.setTolerance(2.0);
+        pidController = new PIDController(0.011, 0.000, 0.000);
+        pidController.setTolerance(0.05);
         // pidController.setSetpoint(getMeasurement());
 
-        // SparkMaxConfig config = new SparkMaxConfig();
-        // config.inverted(true);
-        // config.idleMode(IdleMode.kBrake);
-        // config.closedLoop.pid(0.011, 0.0, 0.0);
+        SparkMaxConfig config = new SparkMaxConfig();
+        config.inverted(true);
+        config.idleMode(IdleMode.kBrake);
+        config.closedLoop.pid(0.011, 0.0, 0.0);
+
+        feedForward = 
+            new ArmFeedforward(0.11327, 0.76416, 0.56387,0.041488);
 
         
 
@@ -65,6 +77,19 @@ private AbsoluteEncoder armEncoder;
     
     }
 
+    @Override
+    public void periodic() {
+    Logger.recordOutput("Current Position", getPosition());
+    
+    double pidMotorSpeed =
+    pidController.calculate(getPosition(), targetPosition)
+        + feedForward.calculate(targetPosition, 0);
+        Logger.recordOutput("Wrist Speed", pidMotorSpeed);
+        setMotor(
+            MathUtil.clamp((pidMotorSpeed), -ElevatorConstants.MAX_ELEVATOR_VOLTAGE, ElevatorConstants.MAX_ELEVATOR_VOLTAGE));
+
+    }
+
     public void armUp() { 
         armMotorL.set(ARM_SPEED);
     }
@@ -74,6 +99,25 @@ private AbsoluteEncoder armEncoder;
 
     }
 
+    public void setPosition(double position) {
+        Logger.recordOutput("Arm Position", position);
+    
+        targetPosition = position;
+      }
+
+    public void setArmSetpoint(double offset) {
+        targetPosition = (getPosition() + offset);
+    }
+
+    public double getPosition() {
+        return 0;
+    }
+
+    public void setMotor(double voltage) {
+        setVoltage(voltage);
+    }
+
+    public void setVoltage(double speed) {}
 
     
     // public double getMeasurement() {

@@ -6,6 +6,8 @@ package frc.robot.subsystems;
 
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+import org.photonvision.PhotonCamera;
+import org.photonvision.proto.Photon;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.config.PIDConstants;
@@ -14,8 +16,11 @@ import com.pathplanner.lib.controllers.PPHolonomicDriveController;
 
 import edu.wpi.first.hal.FRCNetComm.tInstances;
 import edu.wpi.first.hal.FRCNetComm.tResourceType;
+import edu.wpi.first.cameraserver.CameraServer;
+import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.util.WPIUtilJNI;
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -28,20 +33,34 @@ import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.ADIS16470_IMU.IMUAxis;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim;
+import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotGearing;
+import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotMotor;
+import edu.wpi.first.wpilibj.simulation.DifferentialDrivetrainSim.KitbotWheelSize;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.robot.Constants;
 import frc.robot.Constants.DriveConstants;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ModuleConstants;
+import frc.robot.Constants.OIConstants;
 import frc.Utils.SwerveUtils;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 
 
 public class DriveSubsystem extends SubsystemBase {
-   //get state, poistion and length 
+  private PhotonCamera camera1;
+  // UsbCamera camera1;
+  //get state, poistion and length 
   // private final SimSwerveModule[] modules = new SimSwerveModule() 
 //   private final SimSwerveModule[] modules = SwerveModuleState.getState()
 //  new SwerveModuleState(m_drivingEncoder.getVelocity(),
 //   new Rotation2d(m_turningEncoder.getPosition() - m_chassisAngularOffset));
   private final SwerveDriveKinematics kinematics = DriveConstants.kDriveKinematics;
+
+    static XboxController m_driverController1 = new XboxController(OIConstants.kDriverControllerPort);
 
 
   private Field2d field = new Field2d();
@@ -68,7 +87,6 @@ private final MAXSwerveModule m_rearRight = new MAXSwerveModule(
 
     private final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
 
-
     private final SwerveDriveOdometry odometry = new SwerveDriveOdometry(
       DriveConstants.kDriveKinematics,
       Rotation2d.fromDegrees(m_gyro.getAngle(IMUAxis.kZ)),
@@ -93,15 +111,19 @@ private final MAXSwerveModule m_rearRight = new MAXSwerveModule(
    private SlewRateLimiter m_rotLimiter = new SlewRateLimiter(ModuleConstants.kRotationalSlewRate);
    private double m_prevTime = WPIUtilJNI.now() * 1e-6;
 
+private final DifferentialDrivetrainSim sim =
+DifferentialDrivetrainSim.createKitbotSim(
+          KitbotMotor.kDualCIMPerSide, KitbotGearing.k10p71, KitbotWheelSize.kSixInch, null);
+
+
+
   // Odometry class for tracking robot pose
  
 
   /** Creates a new DriveSubsystem. */
   public DriveSubsystem() {
+    
     // modules = null;
-
-
-
     // Usage reporting for MAXSwerve template
     HAL.report(tResourceType.kResourceType_RobotDrive, tInstances.kRobotDriveSwerve_MaxSwerve);
     try{
@@ -138,10 +160,37 @@ private final MAXSwerveModule m_rearRight = new MAXSwerveModule(
 
   @Override
   public void periodic() {
+    // double forward = -m_driverController1.getLeftY()*Constants.DriveConstants.kMaxSpeedMetersPerSecond;
+    // double strafe = -m_driverController1.getLeftX()*Constants.DriveConstants.kMaxSpeedMetersPerSecond;
+    // double turn = -m_driverController1.getLeftX()*Constants.DriveConstants.kMaxAngularSpeed;
+
+    // boolean targetVisible = false;
+    // double targetYaw = 0.0;
+    // var results = camera1.getAllUndreadResults();
+    // if (!results.isEmpty()) {
+    //   var result = results.get(results.size() -1);
+    //   if (result.hasTargets()){
+    //     for (var target : results.getTargets()){
+    //       if (target.getFiducialId() == 7) {
+    //         targetYaw = target.getYaw();
+    //         targetVisible = true;
+    //       }
+    //     }
+    //   }
+    // }
+
+    // if (controller.getAButton() && targetVisible) {
+    //   turn = -1.0 * targetYaw * Constants.VisionConstants.kP * Constants.DriveConstants.kMaxAngularSpeed;
+    // }
+
+    // DriveSubsystem(forward, strafe, turn);
+
+    // SmartDashboard.putBoolean("Vision Target Visible", targetVisible)
+
     // Update the odometry in the periodic block
+    sim.update(0.02);
     m_poseEstimator.update(
-        Rotation2d.fromDegrees(m_gyro.getAngle(IMUAxis.kZ)),
-        new SwerveModulePosition[] {
+        sim.getHeading(), new SwerveModulePosition[] {
             m_frontLeft.getPosition(),
             m_frontRight.getPosition(),
             m_rearLeft.getPosition(),
@@ -359,4 +408,11 @@ private final MAXSwerveModule m_rearRight = new MAXSwerveModule(
   public double getTurnRate() {
     return m_gyro.getRate(IMUAxis.kZ) * (DriveConstants.kGyroReversed ? -1.0 : 1.0);
   }
-}
+    public void addVisionMeasurement(
+      Pose2d visionRobotPoseMeters,
+      double timestampSeconds,
+      Matrix<N3, N1> visionMeasurementStdDevs) {
+    m_poseEstimator.addVisionMeasurement(
+        visionRobotPoseMeters, timestampSeconds, visionMeasurementStdDevs);
+  }
+  }

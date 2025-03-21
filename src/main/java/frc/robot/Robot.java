@@ -7,13 +7,15 @@ package frc.robot;
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.cscore.UsbCamera;
 import edu.wpi.first.cscore.VideoSource.ConnectionStrategy;
-// import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.cscore.VideoSink;
+import org.littletonrobotics.junction.Logger;
+
 
 /**
  * The VM is configured to automatically run this class, and to call the functions corresponding to
@@ -22,23 +24,20 @@ import edu.wpi.first.cscore.VideoSink;
  * project.
  */
 public class Robot extends TimedRobot {
-  UsbCamera camera1;
   UsbCamera camera2;
   VideoSink server;
   NetworkTableEntry cameraSelection;
   Joystick joy1 = new Joystick(0);
 
-  // private Timer matchTimer;
-  // private int matchTimerRemaining;
+  private Timer matchTimer;
+  private double matchTimerRemaining;
   public Robot() {
-    camera1 = CameraServer.startAutomaticCapture(0);
     camera2 = CameraServer.startAutomaticCapture(1);
     server = CameraServer.getServer();
-    camera1.setConnectionStrategy(ConnectionStrategy.kKeepOpen);
     camera2.setConnectionStrategy(ConnectionStrategy.kKeepOpen);
     //cameraSelection = NetworkTableInstance.getDefault().getTable("").getEntry("CameraSelection");
-    // matchTimer = new Timer();
-    // matchTimerRemaining = 150;
+    matchTimer = new Timer();
+    matchTimerRemaining = 150;
   }
   private Command m_autonomousCommand;
 
@@ -65,6 +64,7 @@ public class Robot extends TimedRobot {
     // and running subsystem periodic() methods.  This must be called from the robot's periodic
     // block in order for anything in the Command-based framework to work.
     CommandScheduler.getInstance().run();
+    
   }
 
   /** This function is called once each time the robot enters Disabled mode. */
@@ -73,19 +73,18 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledPeriodic() {
-    // matchTimer.stop();
+    matchTimer.stop();
   }
 
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {  
-  // autonomousCommand = robotContainter.getAutonomousCommand();
-  // matchTimer.reset();
-  // matchTimer.start();
-  // //scheule command
-  // if (m_autonomousCommand != null) {
-  //   m_autonomousCommand.schedule();
-  //   }
+  matchTimer.reset();
+  matchTimer.start();
+  //scheule command
+  if (m_autonomousCommand != null) {
+    m_autonomousCommand.schedule();
+    }
   }
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector",
@@ -100,8 +99,9 @@ public class Robot extends TimedRobot {
 
   /** This function is called periodically during autonomous. */
   @Override
-  public void autonomousPeriodic() {}
-  // matchTimerRemaining = 150 -(int) matchTimer.get();
+  public void autonomousPeriodic() {
+  Logger.recordOutput("Time Remaining", matchTimerRemaining = 150 -(int) matchTimer.get());
+  }
   @Override
   public void teleopInit() {
     // This makes sure that the autonomous stops running when
