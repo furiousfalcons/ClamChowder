@@ -49,6 +49,12 @@ public class DriveToTrackedTargetCommand extends Command {
 
     @Override
     public void execute() {
+
+        if (!RobotContainer.isTrackingEnabled) {
+            m_drivetrainSubsystem.drive(0, 0, 0, false, true); // Stop moving if tracking is disabled
+            return;
+        }
+        
         if (m_visionSubsystem.getHasTarget()) {
             PhotonTrackedTarget trackedTarget;
             if(targetTagID == 0) {
@@ -79,7 +85,7 @@ public class DriveToTrackedTargetCommand extends Command {
                         Constants.CAMERA_PITCH_RADIANS,
                         trackedTarget.getPitch()
                     );
-                    translationValue = translationalError * Constants.TRACKED_TAG_DISTANCE_DRIVE_KP * 3;
+                    translationValue = translationalError * Constants.TRACKED_TAG_DISTANCE_DRIVE_KP;
                 }
 
                 // Translate the values into forward, strafe, and rotation

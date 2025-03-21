@@ -4,6 +4,17 @@
 
 package frc.robot;
 
+import java.util.List;
+
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.events.EventTrigger;
+import com.pathplanner.lib.path.GoalEndState;
+import com.pathplanner.lib.path.PathConstraints;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.path.Waypoint;
+
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
@@ -15,17 +26,40 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.XboxController;
-import edu.wpi.first.wpilibj.PS4Controller;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.PS4Controller.Button;
 import frc.robot.Constants.AutoConstants;
 import frc.robot.Constants.DriveConstants;
 import frc.robot.Constants.OIConstants;
+import frc.robot.commands.ClimbON;
+import frc.robot.commands.ClimbStop;
+import frc.robot.commands.Down_Arm;
+import frc.robot.commands.DriveToTrackedTargetCommand;
+import frc.robot.commands.Elevator_Up;
+import frc.robot.commands.Elevator_Down;
+import frc.robot.commands.IntakeIn;
+import frc.robot.commands.IntakeOut;
+import frc.robot.commands.Stop_Arm;
+import frc.robot.commands.Stop_Intake;
+import frc.robot.commands.Up_Arm;
+import frc.robot.commands.climbDown;
+import frc.robot.subsystems.Arm;
+import frc.robot.commands.ClimbON;
+import frc.robot.commands.ClimbStop;
+import frc.robot.subsystems.Climb;
+import frc.robot.subsystems.InTakeOutPut;
+import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.Elevator;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.SwerveControllerCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import java.util.List;
+
+import com.pathplanner.lib.auto.AutoBuilder;
 
 /*
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
@@ -34,106 +68,187 @@ import java.util.List;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+
+  private final SendableChooser<Command> autoChooser;
   // The robot's subsystems
-  private final DriveSubsystem m_robotDrive = new DriveSubsystem();
- 
+  public static final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  public static final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
+  public static boolean isTrackingEnabled = false; // toggle searching for april tags
+  private Arm arm = new Arm();
+  private InTakeOutPut intakeShooter = new InTakeOutPut();
+  private Elevator climb = new Elevator();
+   private Climb goClimb = new Climb();
+  private final IntakeIn inTake = new IntakeIn(intakeShooter);
+  private final IntakeOut shoot = new IntakeOut(intakeShooter);
+  private final climbDown climb_p = new climbDown(goClimb);
+  private final ClimbON climb_r = new ClimbON(goClimb);
+  private final ClimbStop climb_f = new ClimbStop(goClimb);
+  private final Stop_Intake stopIntake = new Stop_Intake(intakeShooter);
+   private final Up_Arm armUp = new Up_Arm(arm);
+  private final Down_Arm armDown = new Down_Arm(arm);
+  private final Stop_Arm armStop = new Stop_Arm(arm);
+ private final DriveToTrackedTargetCommand april = new DriveToTrackedTargetCommand(2, 3); // vision command
 
 
   // The driver's controller
-  PS4Controller m_driverController = new PS4Controller(OIConstants.kDriverControllerPort);
+  static XboxController m_driverController1 = new XboxController(OIConstants.kDriverControllerPort);
+  static XboxController m_driverController2 = new XboxController(OIConstants.kDriverControllerPort1);
+  
+    /**
+     * The container for the robot. Contains subsystems, OI devices, and commands.
+     */
+    public RobotContainer() {
 
-  /**
-   * The container for the robot. Contains subsystems, OI devices, and commands.
-   */
-  public RobotContainer() {
-    // Configure the button bindings
-    configureButtonBindings();
+      // boolean isCompetition = true;
+      // autoChooser = AutoBuilder.buildAutoChooserWithOptionsModifier(
+      //   (stream) -> isCompetition
+      //   ? stream.filter(auto -> auto.getName().startsWith("comp"))
+      //   : stream
+      // );
+   
+      // Configure the button bindings
+      configureButtonBindings();
+      
+  
+      // Configure default commands
+      m_robotDrive.setDefaultCommand(
+          
+          // The left stick controls translation of the robot.
+          // Turning is controlled by the X axis of the right stick.
+          new RunCommand(
+              
+              () -> m_robotDrive.drive(
+                  -MathUtil.applyDeadband(m_driverController1.getLeftY(), OIConstants.kDriveDeadband),
+                  -MathUtil.applyDeadband(m_driverController1.getLeftX(), OIConstants.kDriveDeadband),
+                  -MathUtil.applyDeadband(m_driverController1.getRightX(), OIConstants.kDriveDeadband),
+                  true, true),
+              m_robotDrive));
+              new JoystickButton(m_driverController1, Button.kR3.value)
+              .whileTrue(new RunCommand( () -> m_robotDrive.setX(), m_robotDrive));
 
-    // Configure default commands
-    m_robotDrive.setDefaultCommand(
-        
-        // The left stick controls translation of the robot.
-        // Turning is controlled by the X axis of the right stick.
+      climb.setDefaultCommand(
         new RunCommand(
-            
-            () -> m_robotDrive.drive(
-                -MathUtil.applyDeadband(m_driverController.getLeftY(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getLeftX(), OIConstants.kDriveDeadband),
-                -MathUtil.applyDeadband(m_driverController.getRightX(), OIConstants.kDriveDeadband),
-                true),
-            m_robotDrive));
-  }
+          () -> climb.toggleElevator(
+            -MathUtil.applyDeadband(m_driverController2.getLeftTriggerAxis(), 0.05),
+            -MathUtil.applyDeadband(m_driverController2.getRightTriggerAxis(), 0.05)
+          ), 
+        climb));
+    
+        autoChooser = AutoBuilder.buildAutoChooser();
+        SmartDashboard.putData("Auto Mode", autoChooser);
 
-  /**
-   * Use this method to define your button->command mappings. Buttons can be
-   * created by
-   * instantiating a {@link edu.wpi.first.wpilibj.GenericHID} or one of its
-   * subclasses ({@link
-   * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then calling
-   * passing it to a
-   * {@link JoystickButton}.
-   */
-  private void configureButtonBindings() {
-    /*JoystickButton climbUpButton = new JoystickButton(m_driverController, 1);
-    JoystickButton armDownButton = new JoystickButton(m_driverController, 2);
-    JoystickButton inTakeButton = new JoystickButton(m_driverController, 3);
-    JoystickButton shootButton = new JoystickButton(m_driverController, 4);
-    climbUpButton.whileTrue(climbUp);
-    armDownButton.whileTrue(armDown);
-    inTakeButton.whileTrue(inTake);
-    shootButton.whileTrue(shoot);*/
-    new JoystickButton(m_driverController, Button.kR1.value)
-        .whileTrue(new RunCommand(
-            () -> m_robotDrive.setX(),
-            m_robotDrive));
-  }
+        // arm.setDefaultCommand(
+        //   new RunCommand(
+        //     () -> arm.
+        //   )
+        // );
+    }
+  
+    /**
+     * Use this method to define your button->command mappings. Buttons can be
+     * created by
+     * instantiating a {@link edu.wpi.first.wpilibj.GenericHID} or one of its
+     * subclasses ({@link
+     * edu.wpi.first.wpilibj.Joystick} or {@link XboxController}), and then calling
+     * passing it to a
+     * {@link JoystickButton}.
+     */
+    private void configureButtonBindings() {
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
- * @return 
-   */
-  public Object getAutonomousCommand() {
-    // Create config for trajectory
-   /*  TrajectoryConfig config = new TrajectoryConfig(
-        AutoConstants.kMaxSpeedMetersPerSecond,
-        AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-        // Add kinematics to ensure max speed is actually obeyed
-        .setKinematics(DriveConstants.kDriveKinematics);
+      JoystickButton shootButton = new JoystickButton(m_driverController2, 3);
+      JoystickButton armUpButton = new JoystickButton(m_driverController2, 4);
+      JoystickButton armDownButton = new JoystickButton(m_driverController2, 1);
+      JoystickButton inTakeButton = new JoystickButton(m_driverController2, 2);
+       JoystickButton climbButton = new JoystickButton(m_driverController2, 5);
+      JoystickButton climbButton2 = new JoystickButton(m_driverController2, 6);
+      JoystickButton toggleTrackingButton = new JoystickButton(m_driverController1, 1); // does this go here or with the other controller1 stuff
 
-    // An example trajectory to follow. All units in meters.
-    Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-        // Start at the origin facing the +X direction
-        new Pose2d(0, 0, new Rotation2d(0)),
-        // Pass through these two interior waypoints, making an 's' curve path
-        List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-        // End 3 meters straight ahead of where we started, facing forward
-        new Pose2d(3, 0, new Rotation2d(0)),
-        config);
+      
+      toggleTrackingButton.onTrue(new InstantCommand(() -> {  // toggle to turn on april tag detection
+            isTrackingEnabled = !isTrackingEnabled; // Toggle tracking
+            System.out.println("Tracking enabled: " + isTrackingEnabled);
 
-    var thetaController = new ProfiledPIDController(
-        AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
-    thetaController.enableContinuousInput(-Math.PI, Math.PI);
+            if (isTrackingEnabled) {    
+                april.schedule(); // Start command
+            } else {
+                april.cancel(); // Stop command
+            }
+        }));
+      climbButton2.whileTrue(climb_p);
+      climbButton.whileTrue(climb_r);
+      climbButton2.whileFalse(climb_f);
+      climbButton.whileFalse(climb_f);
+      armUpButton.toggleOnTrue(armUp);
+      armDownButton.toggleOnTrue(armDown);
+      inTakeButton.whileTrue(inTake);
+      shootButton.whileTrue(shoot);
+      inTakeButton.whileFalse(stopIntake);
+      shootButton.whileFalse(stopIntake);
+      armUpButton.toggleOnFalse(armStop);
+      armDownButton.toggleOnFalse(armStop);
 
-    SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
-        exampleTrajectory,
-        m_robotDrive::getPose, // Functional interface to feed supplier
-        DriveConstants.kDriveKinematics,
+    }
+  
+    /**
+     * Use this to pass the autonomous command to the main {@link Robot} class.
+   * @return 
+     */
+    
+    
 
-        // Position controllers
-        new PIDController(AutoConstants.kPXController, 0, 0),
-        new PIDController(AutoConstants.kPYController, 0, 0),
-        thetaController,
-        m_robotDrive::setModuleStates,
-        m_robotDrive);
+    public Command getAutonomousCommand() {
+      //  // Create config for trajectory
+      //   TrajectoryConfig config = new TrajectoryConfig(
+      //     AutoConstants.kMaxSpeedMetersPerSecond,
+      //      AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+      //     // Add kinematics to ensure max speed is actually obeyed
+      //      .setKinematics(DriveConstants.kDriveKinematics);
+  
+      // // An example trajectory to follow. All units in meters.
+      // Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+      //     // Start at the origin facing the +X direction
+      //     new Pose2d(0, 0, new Rotation2d(0)),
+      //     // Pass through these two interior waypoints, making an 's' curve path
+      //     List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
+      //     // End 3 meters straight ahead of where we started, facing forward
+      //     new Pose2d(3, 0, new Rotation2d(0)),
+      //     config);
+  
+      // var thetaController = new ProfiledPIDController(
+      //     AutoConstants.kPThetaController, 0, 0, AutoConstants.kThetaControllerConstraints);
+      // thetaController.enableContinuousInput(-Math.PI, Math.PI);
+  
+      // SwerveControllerCommand swerveControllerCommand = new SwerveControllerCommand(
+      //     exampleTrajectory,
+      //     m_robotDrive::getPose, // Functional interface to feed supplier
+      //     DriveConstants.kDriveKinematics,
+  
+      //     // Position controllers
+      //     new PIDController(AutoConstants.kPXController, 0, 0),
+      //     new PIDController(AutoConstants.kPYController, 0, 0),
+      //     thetaController,
+      //     m_robotDrive::setModuleStates,
+      //     m_robotDrive);
+  
+      // // Reset odometry to the starting pose of the trajectory.
+      // m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
+   
+      // // Run path following command, then stop at the end.
+      // return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
 
-    // Reset odometry to the starting pose of the trajectory.
-    m_robotDrive.resetOdometry(exampleTrajectory.getInitialPose());
- 
-    // Run path following command, then stop at the end.
-    return swerveControllerCommand.andThen(() -> m_robotDrive.drive(0, 0, 0, false, false));
-  }
-*/  return null;}
-  public void logTheBits() {
-    // DriverStation.reportError(arm.getMeasurement()  +"", false);
+      return autoChooser.getSelected();
+    }
+  // *  return null;}
+    public void logTheBits() {
+      // DriverStation.reportError(arm.getMeasurement()  +"", false);
+    }
+  
+    public static void Test_controller() {
+      // double potato = m_driverController.getLeftX();
+      // int i = 1;
+      // while (i < 5) {
+      //   System.out.println(potato);
+      //   i++;
+      // }
   }
 }
