@@ -72,12 +72,12 @@ public class RobotContainer {
   private Arm arm = new Arm();
   private InTakeOutPut intakeShooter = new InTakeOutPut();
   private Elevator climb = new Elevator();
-   private Climb goClimb = new Climb();
+  //  private Climb goClimb = new Climb();p
   private final IntakeIn inTake = new IntakeIn(intakeShooter);
   private final IntakeOut shoot = new IntakeOut(intakeShooter);
-  private final climbDown climb_p = new climbDown(goClimb);
-  private final ClimbON climb_r = new ClimbON(goClimb);
-  private final ClimbStop climb_f = new ClimbStop(goClimb);
+  private final climbDown climb_p = new climbDown(climb);
+  private final ClimbON climb_r = new ClimbON(climb);
+  private final ClimbStop climb_f = new ClimbStop(climb);
   private final Stop_Intake stopIntake = new Stop_Intake(intakeShooter);
    private final Up_Arm armUp = new Up_Arm(arm);
   private final Down_Arm armDown = new Down_Arm(arm);
@@ -121,18 +121,18 @@ public class RobotContainer {
               new JoystickButton(m_driverController1, Button.kR3.value)
               .whileTrue(new RunCommand( () -> m_robotDrive.setX(), m_robotDrive));
 
-      climb.setDefaultCommand(
-        new RunCommand(
-          () -> climb.toggleElevator(
-            -MathUtil.applyDeadband(m_driverController2.getLeftTriggerAxis(), 0.05),
-            -MathUtil.applyDeadband(m_driverController2.getRightTriggerAxis(), 0.05)
-          ), 
-        climb));
+      // climb.setDefaultCommand(
+      //   new RunCommand(
+      //     () -> climb.toggleElevator(
+      //       -MathUtil.applyDeadband(m_driverController2.getLeftTriggerAxis(), 0.05),
+      //       -MathUtil.applyDeadband(m_driverController2.getRightTriggerAxis(), 0.05)
+      //     ),
+      //   climb));
     
         autoChooser = AutoBuilder.buildAutoChooser();
         SmartDashboard.putData("Auto Mode", autoChooser);
 
-        // arm.setDefaultCommand(
+        // arm.setDefaultCommand( 
         //   new RunCommand(
         //     () -> arm.
         //   )
@@ -156,12 +156,12 @@ public class RobotContainer {
       JoystickButton inTakeButton = new JoystickButton(m_driverController2, 2);
        JoystickButton climbButton = new JoystickButton(m_driverController2, 5);
       JoystickButton climbButton2 = new JoystickButton(m_driverController2, 6);
-      climbButton2.whileTrue(climb_p);
-      climbButton.whileTrue(climb_r);
-      climbButton2.whileFalse(climb_f);
-      climbButton.whileFalse(climb_f);
+      climbButton2.toggleOnTrue(climb_p);
+      climbButton.toggleOnTrue(climb_r);
+      climbButton2.toggleOnFalse(climb_f);
+      climbButton.toggleOnFalse(climb_f);
       armUpButton.toggleOnTrue(armUp);
-      armDownButton.toggleOnTrue(armDown);
+      armDownButton.toggleOnTrue(armDown); 
       inTakeButton.whileTrue(inTake);
       shootButton.whileTrue(shoot);
       inTakeButton.whileFalse(stopIntake);

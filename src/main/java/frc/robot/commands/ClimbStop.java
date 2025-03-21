@@ -2,10 +2,11 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Climb;
+import frc.robot.subsystems.Elevator;
 
 public class ClimbStop extends Command{
-    Climb arm;
-  public ClimbStop(Climb subsystem) {
+    Elevator arm;
+  public ClimbStop(Elevator subsystem) {
     // Use addRequirements() here to declare subsystem dependencies.\
      arm = subsystem;
      addRequirements(subsystem);
@@ -15,7 +16,6 @@ public class ClimbStop extends Command{
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // arm.armDown();
 
   }
 
@@ -24,7 +24,7 @@ public class ClimbStop extends Command{
   public void execute() {
     // arm.armDown(i);
     // i++;
-    arm.climbStop();
+    arm.stopToggle();
 
     // arm.moveArmDown();
   }

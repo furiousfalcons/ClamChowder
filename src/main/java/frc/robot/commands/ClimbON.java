@@ -3,10 +3,11 @@
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climb;
+import frc.robot.subsystems.Elevator;
 
 public class ClimbON extends Command{
-    Climb arm;
-  public ClimbON(Climb subsystem) {
+    Elevator arm;
+  public ClimbON(Elevator subsystem) {
     // Use addRequirements() here to declare subsystem dependencies.\
      arm = subsystem;
      addRequirements(subsystem);
@@ -25,7 +26,7 @@ public class ClimbON extends Command{
   public void execute() {
     // arm.armDown(i);
     // i++;
-    arm.climbGo();
+    arm.elevatorUp();
 
     // arm.moveArmDown();
   }

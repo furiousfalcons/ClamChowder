@@ -25,12 +25,12 @@ import edu.wpi.first.math.util.Units;
  */
 public final class Constants {
 
-  public static final int INTAKEOUTPUT_MOTOR_ID_1 = 15;
+  public static final int INTAKEOUTPUT_MOTOR_ID_1 = 13;
   public static final int INTAKEOUTPUT_MOTOR_ID_2 = 4;
   public static final int ELEVATOR_MOTOR_ID =11;
   public static final int armMotorL = 9;
   
-  public static final double inTakeMotorSpeed = .25; 
+  public static final double inTakeMotorSpeed = .50; 
   public static final double shootMotorSpeed = .25;
 
   public static final int armEncoder = 0;

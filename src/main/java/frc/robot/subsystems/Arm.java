@@ -30,95 +30,84 @@ public class Arm extends SubsystemBase{
 
     private SparkMax armMotorL;
     // private DutyCycleEncoder armEncoder;
-    // private Encoder armEncoder;
-private AbsoluteEncoder armEncoder;
-    // private final PIDController pidController;
+    private AbsoluteEncoder armEncoder;
+    private final PIDController pidController;
 
     private static final double ARM_SPEED = 0.5;
     private static final double MOVE_TIME = 1.5;
+    private static final double BOTTOM_LIMIT = 0.0;
+    private static final double TOP_LIMIT = 0.615;
+    private static final boolean test_boolean = true;
 
-
-    public Arm(){
-
-        
-        armMotorL = new SparkMax(4, MotorType.kBrushed);
-        // armEncoder = armMotorL.getAbsoluteEncoder();
-
-
-        // pidController = new PIDController(0.011, 0.000, 0.000);
-        // pidController.setTolerance(2.0);
-        // pidController.setSetpoint(getMeasurement());
-
-        // SparkMaxConfig config = new SparkMaxConfig();
-        // config.inverted(true);
-        // config.idleMode(IdleMode.kBrake);
-        // config.closedLoop.pid(0.011, 0.0, 0.0);
-
-
-        // pidController.setSetpoint(20);
-        // armMotorL.setCANTimeout(250);
-
-        // MathUtil.clamp(pidController.calculate(armEncoder.get(), setpoint), -0.5, 0.5);
+public Arm(){
 
     
-    }
+    pidController = new PIDController(0.11, 0.0, 0.0);
+    armMotorL = new SparkMax(4, MotorType.kBrushed);
+    armEncoder = armMotorL.getAbsoluteEncoder();
+    pidController.setTolerance(0.04);
 
-    public void armUp() { 
+
+    // SparkMaxConfig config = new SparkMaxConfig();        
+    // config.inverted(true);
+    // config.idleMode(IdleMode.kBrake);
+    // config.closedLoop.pid(0.011, 0.0, 0.0);
+
+
+    // pidController.setSetpoint(20);0.072 High
+    // armMotorL.setCANTimeout(250); 0.429 low
+
+}
+
+// public void armUp() { 
+//     armMotorL.set(ARM_SPEED);
+// }
+
+// public void armDown() {  
+//     armMotorL.set(-0.1);
+// }
+
+public void armUp(){
+    pidController.setSetpoint(TOP_LIMIT);
+    double num = 1/(pidController.calculate(armEncoder.getPosition()));
+    // System.out.println("one :" + num);
+    // System.out.pri ntln("two:" + armEncoder.getPosition());
+    // System.out.println("three: "+ pidController.atSetpoint());
+    if (pidController.atSetpoint() == false){
         armMotorL.set(ARM_SPEED);
     }
-
-    public void armDown() {
-        armMotorL.set(-0.1);
-
-    }
-
-
-    
-    // public double getMeasurement() {
-    //     return  armEncoder.get();
-    //      //rotations not position unfortnately :()
-    // }
-
-    
-    // protected void useOutput(double output, double setpoint) {
-    //     System.out.println(output);
-    //  }
-
-    //  @Override
-    //  public void periodic(){
-    //     // double num = armEncoder.getPositionConversionFactor();
-    //     double num = armEncoder.getPosition();
-    //     System.out.println(num);
-    
-    //  }
-        
-    // public void armDown(int num) { 
-    //     if (num%2 == 0){
-    //         //double distance = pidController.getSetpoint() + 2;
-    //         pidController.setSetpoint(270);
-    //     }
-    //     if (num%2 == 1){
-    //         pidController.setSetpoint(pidController.getSetpoint());
-    //     }
-
-    // }
-
-    // public void armUp(int num) { 
-    //     if (num%2 == 0){
-    //         //double distance = pidController.getSetpoint() - 2;
-    //         pidController.setSetpoint( 135) ;
-    //     }
-    //     if (num%2 == 1){
-    //         pidController.setSetpoint(pidController.getSetpoint());
-    //     }
-
-    // }
-
-    public void armStop(){
+    else if(pidController.atSetpoint() == true){
         armMotorL.set(0.18);
     }
+}
+public void armDown(){
+    pidController.setSetpoint(BOTTOM_LIMIT);
 
-
+    // armMotorL.set(MathUtil.clamp((pidController.calculate(armEncoder.getPosition(), BOTTOM_LIMIT)),-0.1, ARM_SPEED));
+    if (pidController.atSetpoint() == false){
+        armMotorL.set(-0.1);
+    } else if(pidController.atSetpoint() == true){
+        armMotorL.set(0.18);
+    }
+}
 
     
+public double getMeasurement() {
+    return  armEncoder.getPosition();
+}
+
+
+
+ @Override
+ public void periodic(){
+    // double num = armEncoder.getPositionConversionFactor();
+    double num = armEncoder.getPosition();
+    // System.out.println(num);
+ }
+    
+
+public void armStop(){
+    armMotorL.set(0.18);
+}
+
 }
