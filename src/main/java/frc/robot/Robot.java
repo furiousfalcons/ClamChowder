@@ -14,7 +14,12 @@ import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.cscore.VideoSink;
+
+import org.littletonrobotics.junction.LogFileUtil;
 import org.littletonrobotics.junction.Logger;
+import org.littletonrobotics.junction.networktables.NT4Publisher;
+import org.littletonrobotics.junction.wpilog.WPILOGReader;
+import org.littletonrobotics.junction.wpilog.WPILOGWriter;
 
 
 /**
@@ -24,22 +29,52 @@ import org.littletonrobotics.junction.Logger;
  * project.
  */
 public class Robot extends TimedRobot {
-  UsbCamera camera2;
+  UsbCamera camera1;
   VideoSink server;
   NetworkTableEntry cameraSelection;
   Joystick joy1 = new Joystick(0);
+  RobotContainer robotContainer;
+  Command autonomousCommand;
+
+
 
   private Timer matchTimer;
   private double matchTimerRemaining;
   public Robot() {
-    camera2 = CameraServer.startAutomaticCapture(1);
+    camera1 = CameraServer.startAutomaticCapture(1);
     server = CameraServer.getServer();
-    camera2.setConnectionStrategy(ConnectionStrategy.kKeepOpen);
+    camera1.setConnectionStrategy(ConnectionStrategy.kKeepOpen);
     //cameraSelection = NetworkTableInstance.getDefault().getTable("").getEntry("CameraSelection");
     matchTimer = new Timer();
     matchTimerRemaining = 150;
+
+    Logger.recordMetadata("ProjectName", "MyProject");
+
+    switch (Constants.currentMode) {
+      case REAL:
+        // Running on a real robot, log to a USB stick ("/U/logs")
+        Logger.addDataReceiver(new WPILOGWriter());
+        Logger.addDataReceiver(new NT4Publisher());
+        break;
+
+      case SIM:
+        // Running a physics simulator, log to NT
+        Logger.addDataReceiver(new NT4Publisher());
+        break;
+
+      case REPLAY:
+        // Replaying a log, set up replay source
+        // Run as fast as possible
+        String logPath = LogFileUtil.findReplayLog();
+        Logger.setReplaySource(new WPILOGReader(logPath));
+        Logger.addDataReceiver(new WPILOGWriter(LogFileUtil.addPathSuffix(logPath, "_sim")));
+        break;
+    }
+
+    Logger.start();
+
   }
-  private Command m_autonomousCommand;
+
 
   /**
    * This function is run when the robot is first started up and should be used for any
@@ -47,7 +82,7 @@ public class Robot extends TimedRobot {
    */
   @Override
   public void robotInit() {
-    new RobotContainer();
+   robotContainer = new RobotContainer();
   }
 
   /**
@@ -79,13 +114,21 @@ public class Robot extends TimedRobot {
   /** This autonomous runs the autonomous command selected by your {@link RobotContainer} class. */
   @Override
   public void autonomousInit() {  
-  matchTimer.reset();
-  matchTimer.start();
+  // matchTimer.reset();
+  // matchTimer.start();
   //scheule command
-  if (m_autonomousCommand != null) {
-    m_autonomousCommand.schedule();
-    }
+  // robotContainer.autonInit();
+  autonomousCommand = robotContainer.getAutonomousCommand();
+  matchTimer.reset(); // Reset the timer when the match starts
+  matchTimer.start(); // Start the timer
+
+      // schedule the autonomous command (example)
+      if (autonomousCommand != null) {
+        autonomousCommand.schedule();
+      }
+ 
   }
+  
     /*
      * String autoSelected = SmartDashboard.getString("Auto Selector",
      * "Default"); switch(autoSelected) { case "My Auto": autonomousCommand
@@ -108,8 +151,8 @@ public class Robot extends TimedRobot {
     // teleop starts running. If you want the autonomous to
     // continue until interrupted by another command, remove
     // this line or comment it out.
-    if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
+    if (autonomousCommand != null) {
+      autonomousCommand.cancel();
     }
   }
 
@@ -141,4 +184,10 @@ public class Robot extends TimedRobot {
   /** This function is called periodically during test mode. */
   @Override
   public void testPeriodic() {}
+
+  @Override
+  public void simulationInit() {}
+
+  @Override
+  public void simulationPeriodic() {}
 }

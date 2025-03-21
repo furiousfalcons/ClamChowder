@@ -12,6 +12,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotBase;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -158,10 +159,13 @@ public static final double TRACKED_TAG_DISTANCE_DRIVE_KP = 0.04;
   }
   
   public static final class ArmConstants{
-    public static final double ARM_REST_POSITION = 1;
-    public static final double ARM_ALGEA_POSITION = 100;
-    public static final double ARM_CORAL_POSITION = 0.865;
+    public static final double ARM_REST_POSITION = .1;
     public static final double ARM_CORAL_LOADING_POSITION = 0.725;
+    public static final double L1_CORAL_ARM = 0.823;
+    public static final double L2_CORAL_ARM = 0.729;
+    public static final double L3_CORAL_ARM = 0.666;
+    public static final double L2_ALGEA_ARM = 0.700;
+    public static final double L3_ALGEA_ARM = 0.670;
   }
 
   public static final class ElevatorConstants{
@@ -213,4 +217,17 @@ public static final double TRACKED_TAG_DISTANCE_DRIVE_KP = 0.04;
     public static double angularStdDevMegatag2Factor =
         Double.POSITIVE_INFINITY; // No rotation data available
   }
+   public static final Mode simMode = Mode.SIM;
+  public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
+
+  public static enum Mode {
+    /** Running on a real robot. */
+    REAL,
+
+    /** Running a physics simulator. */
+    SIM,
+
+    /** Replaying from a log file. */
+    REPLAY
+}
 }

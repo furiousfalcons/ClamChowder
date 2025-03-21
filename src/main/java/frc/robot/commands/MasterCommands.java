@@ -54,7 +54,7 @@ public class MasterCommands {
                 waitSeconds(0.25),
                 runOnce(() -> elevator.setPosition(Constants.ElevatorConstants.L1_CORAL), elevator),
                 waitSeconds(0.25),
-                runOnce(()-> arms.setPosition(Constants.ArmConstants.ARM_CORAL_POSITION), arms));  
+                runOnce(()-> arms.setPosition(Constants.ArmConstants.L1_CORAL_ARM), arms));  
               }
 
     public static Command setElevatorPositionL2C(Arm arms, Elevator elevator, double l2Coral, double armCoralPosition) {
@@ -63,7 +63,7 @@ public class MasterCommands {
             waitSeconds(0.25),
             runOnce(() -> elevator.setPosition(Constants.ElevatorConstants.L2_CORAL), elevator),
             waitSeconds(0.25),
-            runOnce(()-> arms.setPosition(Constants.ArmConstants.ARM_CORAL_POSITION), arms));  
+            runOnce(()-> arms.setPosition(Constants.ArmConstants.L2_CORAL_ARM), arms));  
     }
 
     public static Command setElevatorPositionL3C(Arm arms, Elevator elevator, double l3Coral, double armCoralPosition) {
@@ -72,7 +72,7 @@ public class MasterCommands {
             waitSeconds(0.25),
             runOnce(() -> elevator.setPosition(Constants.ElevatorConstants.L3_CORAL), elevator),
             waitSeconds(0.25),
-            runOnce(()-> arms.setPosition(Constants.ArmConstants.ARM_CORAL_POSITION), arms));  
+            runOnce(()-> arms.setPosition(Constants.ArmConstants.L3_CORAL_ARM), arms));  
     }
 
     public static Command setElevatorPositionL2A(Arm arms, Elevator elevator, double l2Algea, double armAlgeaPosition) {
@@ -81,26 +81,26 @@ public class MasterCommands {
             waitSeconds(0.25),
             runOnce(() -> elevator.setPosition(Constants.ElevatorConstants.L2_ALGEA), elevator),
             waitSeconds(0.25),
-            runOnce(()-> arms.setPosition(Constants.ArmConstants.ARM_ALGEA_POSITION), arms)); 
+            runOnce(()-> arms.setPosition(Constants.ArmConstants.L2_ALGEA_ARM), arms)); 
     }
 
     public static Command setElevatorPositionL3A(Arm arms, Elevator elevator, double l3Algea, double armAlgeaPosition) {
         return sequence(
             runOnce(()-> arms.setPosition(Constants.ArmConstants.ARM_REST_POSITION), arms),
             waitSeconds(0.25),
-            runOnce(() -> elevator.setPosition(Constants.ElevatorConstants.L2_ALGEA), elevator),
+            runOnce(() -> elevator.setPosition(Constants.ElevatorConstants.L3_ALGEA), elevator),
             waitSeconds(0.25),
-            runOnce(()-> arms.setPosition(Constants.ArmConstants.ARM_ALGEA_POSITION), arms)); 
+            runOnce(()-> arms.setPosition(Constants.ArmConstants.L3_ALGEA_ARM), arms)); 
     }
 
-    public static Command setElevatorPositionLAA(Arm arms, Elevator elevator, double ampAlgea, double armRestPosition) {
-        return sequence(
-            runOnce(()-> arms.setPosition(Constants.ArmConstants.ARM_REST_POSITION), arms),
-            waitSeconds(0.25),
-            runOnce(() -> elevator.setPosition(Constants.ElevatorConstants.AMP_ALGEA), elevator),
-            waitSeconds(0.25),
-            runOnce(()-> arms.setPosition(Constants.ArmConstants.ARM_REST_POSITION), arms)); 
-    }
+    // public static Command setElevatorPositionLAA(Arm arms, Elevator elevator, double ampAlgea, double armRestPosition) {
+    //     return sequence(
+    //         runOnce(()-> arms.setPosition(Constants.ArmConstants.ARM_REST_POSITION), arms),
+    //         waitSeconds(0.25),
+    //         runOnce(() -> elevator.setPosition(Constants.ElevatorConstants.AMP_ALGEA), elevator),
+    //         waitSeconds(0.25),
+    //         runOnce(()-> arms.setPosition(Constants.ArmConstants.ARM_REST_POSITION), arms)); 
+    // }
 
     public static Command setElevatorPositionLI(Arm arms, Elevator elevator, double elevatorIntake,
             double armCoralLoadingPosition) {

@@ -39,7 +39,7 @@ import frc.robot.Constants.OIConstants;
 import frc.robot.commands.ClimbON;
 import frc.robot.commands.ClimbStop;
 import frc.robot.commands.Down_Arm;
-import frc.robot.commands.DriveToTrackedTargetCommand;
+// import frc.robot.commands.DriveToTrackedTargetCommand;
 import frc.robot.commands.Elevator_Up;
 import frc.robot.commands.Elevator_Down;
 import frc.robot.commands.IntakeIn;
@@ -51,7 +51,7 @@ import frc.robot.commands.Up_Arm;
 import frc.robot.commands.climbDown;
 import frc.robot.subsystems.Arm;
 import frc.robot.subsystems.Climb;
-import frc.robot.subsystems.VisionSubsystem;
+// import frc.robot.subsystems.VisionSubsystem;
 import frc.robot.subsystems.InTakeOutPut;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.Elevator;
@@ -74,12 +74,16 @@ import frc.robot.subsystems.vision.VisionIOPhotonVisionSim;
  * (including subsystems, commands, and button mappings) should be declared here.
  */
 public class RobotContainer {
+  private final PhotonCamera camera2;
   private final InTakeOutPut intake;
   private final Arm arm;
   private final Elevator elevator;
+  private double turn = 0;
+  private double strafe = 0;
+  private double forward = 0;
   // The robot's subsystems
     public final static DriveSubsystem m_robotDrive = new DriveSubsystem();
-    public static final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
+    // public static final VisionSubsystem m_visionSubsystem = new VisionSubsystem();
     public static boolean isTrackingEnabled = false; // toggle searching for april tags
   // private InTakeOutPut intakeShooter = new InTakeOutPut();
   // private Elevator climb = new Elevator();
@@ -94,7 +98,7 @@ public class RobotContainer {
   //  private final Up_Arm armUp = new Up_Arm(arm);
   // private final Down_Arm armDown = new Down_Arm(arm);
   // private final Stop_Arm armStop = new Stop_Arm(arm);
-   private final DriveToTrackedTargetCommand april = new DriveToTrackedTargetCommand(2, 3); // vision command
+  //  private final DriveToTrackedTargetCommand april = new DriveToTrackedTargetCommand(2, 3); // vision command
 
  
   private final SendableChooser<Command> autoChooser;
@@ -107,6 +111,7 @@ public class RobotContainer {
      * The container for the robot. Contains subsystems, OI devices, and commands.
      */
     public RobotContainer() {
+camera2 = new PhotonCamera("HD_Webcam_C525");
 intake = new InTakeOutPut();
 elevator = new Elevator();
 arm = new Arm();
@@ -123,7 +128,7 @@ NamedCommands.registerCommand(
                 arm,
                 elevator,
                 ElevatorConstants.L1_CORAL,
-                ArmConstants.ARM_REST_POSITION));
+                ArmConstants.L1_CORAL_ARM));
 
                 NamedCommands.registerCommand(
             "Set Elevator L2 C",
@@ -131,7 +136,7 @@ NamedCommands.registerCommand(
                 arm,
                 elevator,
                 ElevatorConstants.L2_CORAL,
-                ArmConstants.ARM_CORAL_POSITION));
+                ArmConstants.L2_CORAL_ARM));
 
                  NamedCommands.registerCommand(
                   "Set Elevator L3 C",
@@ -139,7 +144,7 @@ NamedCommands.registerCommand(
                       arm,
                       elevator,
                       ElevatorConstants.L3_CORAL,
-                      ArmConstants.ARM_CORAL_POSITION));
+                      ArmConstants.L3_CORAL_ARM));
 
                       NamedCommands.registerCommand(
                   "Set Elevator L2 A",
@@ -147,7 +152,7 @@ NamedCommands.registerCommand(
                       arm,
                       elevator,
                       ElevatorConstants.L2_ALGEA,
-                      ArmConstants.ARM_ALGEA_POSITION));
+                      ArmConstants.L2_ALGEA_ARM));
 
                       NamedCommands.registerCommand(
                   "Set Elevator L3 A",
@@ -155,17 +160,17 @@ NamedCommands.registerCommand(
                       arm,
                       elevator,
                       ElevatorConstants.L3_ALGEA,
-                      ArmConstants.ARM_ALGEA_POSITION));
+                      ArmConstants.L3_ALGEA_ARM));
 
-                      NamedCommands.registerCommand(
-                  "Set Elevator Amp A",
-                  MasterCommands.setElevatorPositionLAA(
-                      arm,
-                      elevator,
-                      ElevatorConstants.AMP_ALGEA,
-                      ArmConstants.ARM_REST_POSITION));
+                  //     NamedCommands.registerCommand(
+                  // "Set Elevator Amp A",
+                  // MasterCommands.setElevatorPositionLAA(
+                  //     arm,
+                  //     elevator,
+                  //     ElevatorConstants.AMP_ALGEA,
+                  //     ArmConstants.ARM_REST_POSITION));
                         NamedCommands.registerCommand(
-                     "Set Elevator Amp A",
+                     "Set Elevator Intake",
                      MasterCommands.setElevatorPositionLI(
                         arm,
                         elevator,
@@ -194,13 +199,41 @@ NamedCommands.registerCommand(
           new RunCommand(
               
               () -> m_robotDrive.drive(
-                  -MathUtil.applyDeadband(m_driverController1.getLeftY(), OIConstants.kDriveDeadband),
-                  -MathUtil.applyDeadband(m_driverController1.getLeftX(), OIConstants.kDriveDeadband),
-                  -MathUtil.applyDeadband(m_driverController1.getRightX(), OIConstants.kDriveDeadband),
+                   forward = -MathUtil.applyDeadband(m_driverController1.getLeftY(), OIConstants.kDriveDeadband),
+                   strafe = -MathUtil.applyDeadband(m_driverController1.getLeftX(), OIConstants.kDriveDeadband),
+                   turn = -MathUtil.applyDeadband(m_driverController1.getRightX(), OIConstants.kDriveDeadband),
                   true, true),
               m_robotDrive));
               new JoystickButton(m_driverController1, Button.kR3.value)
               .whileTrue(new RunCommand( () -> m_robotDrive.setX(), m_robotDrive));
+
+              boolean targetVisble = false;
+              double targetYaw = 0.0;
+              var results = camera2.getAllUnreadResults();
+              if (!results.isEmpty()) {
+                // Camera processed a new frame since last
+                // Get the last one in the list.
+                var result = results.get(results.size() - 1);
+                if (result.hasTargets()) {
+                    // At least one AprilTag was seen by the camera
+                    for (var target : result.getTargets()) {
+                        if (target.getFiducialId() == 7) {
+                            // Found Tag 7, record its information
+                            targetYaw = target.getYaw();
+                            targetVisble = true;
+                        }
+                    }
+                }
+              }
+
+              if (m_driverController1.getAButton() && targetVisble) {
+                turn = -1.0 * targetYaw * 0.1 * Constants.DriveConstants.kMaxAngularSpeed;
+              }
+
+              SmartDashboard.putBoolean("Vision Target Visible", targetVisble);
+
+
+              
 
         
 
@@ -249,16 +282,16 @@ NamedCommands.registerCommand(
       climbButton2.whileFalse(climb_f);
       climbButton.whileFalse(climb_f);
 
-       toggleTrackingButton.onTrue(new InstantCommand(() -> {  // toggle to turn on april tag detection
-            isTrackingEnabled = !isTrackingEnabled; // Toggle tracking
-            System.out.println("Tracking enabled: " + isTrackingEnabled);
+      //  toggleTrackingButton.onTrue(new InstantCommand(() -> {  // toggle to turn on april tag detection
+      //       isTrackingEnabled = !isTrackingEnabled; // Toggle tracking
+      //       System.out.println("Tracking enabled: " + isTrackingEnabled);
 
-            if (isTrackingEnabled) {    
-                april.schedule(); // Start command
-            } else {
-                april.cancel(); // Stop command
-            }
-        }));
+      //       if (isTrackingEnabled) {    
+      //           april.schedule(); // Start command
+      //       } else {
+      //           april.cancel(); // Stop command
+      //       }
+      //   }));
 
 
 
@@ -267,41 +300,41 @@ NamedCommands.registerCommand(
         arm,
         elevator,
         ElevatorConstants.L3_ALGEA,
-        ArmConstants.ARM_ALGEA_POSITION));
+        ArmConstants.L3_ALGEA_ARM));
       LAAButton
-      .onTrue(MasterCommands.setElevatorPositionLAA(
+      .onTrue(MasterCommands.setElevatorPositionL2A(
         arm,
         elevator,
         ElevatorConstants.AMP_ALGEA,
-        ArmConstants.ARM_REST_POSITION));
+        ArmConstants.L2_ALGEA_ARM));
 
-      L2AButton
-      .onTrue(MasterCommands.setElevatorPositionLAA(
-          arm,
-          elevator,
-          ElevatorConstants.AMP_ALGEA,
-          ArmConstants.ARM_REST_POSITION));
+      // L2AButton
+      // .onTrue(MasterCommands.setElevatorPositionLAA(
+      //     arm,
+      //     elevator,
+      //     ElevatorConstants.AMP_ALGEA,
+      //     ArmConstants.ARM_REST_POSITION));
 
       L3CButton
-      .onTrue(MasterCommands.setElevatorPositionL3C(
+      .onTrue(MasterCommands.setElevatorPositionL1C(
         arm,
         elevator,
-        ElevatorConstants.L3_CORAL,
-        ArmConstants.ARM_CORAL_POSITION));
+        ElevatorConstants.L1_CORAL,
+        ArmConstants.L1_CORAL_ARM));
 
       L2CButton
-      .onTrue(MasterCommands.setElevatorPositionL3C(
+      .onTrue(MasterCommands.setElevatorPositionL2C(
         arm,
         elevator,
-        ElevatorConstants.L3_CORAL,
-        ArmConstants.ARM_CORAL_POSITION));
+        ElevatorConstants.L2_CORAL,
+        ArmConstants.L2_CORAL_ARM));
       
       L1CButton
       .onTrue(MasterCommands.setElevatorPositionL3C(
         arm,
         elevator,
-        ElevatorConstants.L1_CORAL,
-        ArmConstants.ARM_CORAL_POSITION));
+        ElevatorConstants.L3_CORAL,
+        ArmConstants.L3_CORAL_ARM));
 
       LIButton
       .onTrue(MasterCommands.setElevatorPositionLI(
@@ -330,4 +363,13 @@ NamedCommands.registerCommand(
     public Command getAutonomousCommand() {
       return autoChooser.getSelected();
     }
+
+    // public void autonInit() {
+    //   Command autonCommand = getAutonomousCommand();
+
+
+    //   if (autonCommand != null) {
+    //     autonCommand.schedule();
+    //   }
+    // }
 }

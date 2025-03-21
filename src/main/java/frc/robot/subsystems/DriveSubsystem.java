@@ -52,6 +52,7 @@ import edu.wpi.first.math.numbers.N3;
 
 public class DriveSubsystem extends SubsystemBase {
   private PhotonCamera camera1;
+  private double targetSpeed = 0;
   // UsbCamera camera1;
   //get state, poistion and length 
   // private final SimSwerveModule[] modules = new SimSwerveModule() 
@@ -197,8 +198,48 @@ DifferentialDrivetrainSim.createKitbotSim(
             m_rearRight.getPosition()
         });
   }
+  
+  public void teleopPeriodic() {
+    double forward = -m_driverController1.getLeftY() * Constants.DriveConstants.kMaxSpeedMetersPerSecond;
+    double strafe = -m_driverController1.getLeftX() * Constants.DriveConstants.kMaxSpeedMetersPerSecond;
+    double turn = -m_driverController1.getRightX() * Constants.DriveConstants.kMaxAngularSpeed; 
 
-  /**
+    // boolean targetVisible = false;
+    //     double targetYaw = 0.0;
+    //     var results = camera1.getAllUnreadResults();
+    //     if (!results.isEmpty()) {
+    //         // Camera processed a new frame since last
+    //         // Get the last one in the list.
+    //         var result = results.get(results.size() - 1);
+    //         if (result.hasTargets()) {
+    //             // At least one AprilTag was seen by the camera
+    //             for (var target : result.getTargets()) {
+    //                 if (target.getFiducialId() == 7) {
+    //                     // Found Tag 7, record its information
+    //                     targetYaw = target.getYaw();
+    //                     targetVisible = true;
+    //                 }
+    //             }
+    //         }
+    //     }
+
+    //     // Auto-align when requested
+    //     if (m_driverController1.getAButton() && targetVisible) {
+    //         // Driver wants auto-alignment to tag 7
+    //         // And, tag 7 is in sight, so we can turn toward it.
+    //         // Override the driver's turn command with an automatic one that turns toward the tag.
+    //         turn = -1.0 * targetYaw * 0.1 * Constants.DriveConstants.kMaxAngularSpeed;
+    //     }
+
+    //     // Command drivetrain motors based on target speeds
+    //     m_robotDrive(forward, strafe, turn);
+        
+    //             // Put debug information to the dashboard
+    //             SmartDashboard.putBoolean("Vision Target Visible", targetVisible);
+          }
+       
+        
+          /**
    * Returns the currently-estimated pose of the robot.
    *
    * @return The pose.
