@@ -105,9 +105,9 @@ public class Elevator extends SubsystemBase{
     public void elevatorDown(){
         pidController.setSetpoint(minPosition);
 
-        if(pidController.atSetpoint() == false){
+        if((pidController.getSetpoint() >= Math.abs(relativeEncoder.getPosition())) == false){
             elevatorMotor.set(ELEVATOR_UP_SPEED);
-        } else if(pidController.atSetpoint() == true){
+        } else if((pidController.getSetpoint() <= Math.abs(relativeEncoder.getPosition())) == true){
             elevatorMotor.set(HOLD_POWER);
         }
     }
