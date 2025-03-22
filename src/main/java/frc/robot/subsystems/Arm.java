@@ -84,7 +84,7 @@ public class Arm extends SubsystemBase{
     double pidMotorSpeed =
     pidController.calculate(getPosition(), targetPosition)
         + feedForward.calculate(targetPosition, 0);
-        Logger.recordOutput("Wrist Speed", pidMotorSpeed);
+        Logger.recordOutput("arm speed", pidMotorSpeed);
         setMotor(
             MathUtil.clamp((pidMotorSpeed), -ElevatorConstants.MAX_ELEVATOR_VOLTAGE, ElevatorConstants.MAX_ELEVATOR_VOLTAGE));
 
