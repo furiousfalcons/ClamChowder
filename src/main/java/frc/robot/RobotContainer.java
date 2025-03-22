@@ -72,7 +72,7 @@ public class RobotContainer {
   private Arm arm = new Arm();
   private InTakeOutPut intakeShooter = new InTakeOutPut();
   private Elevator climb = new Elevator();
-  //  private Climb goClimb = new Climb();p
+  //  private Climb goClimb = new Climb();
   private final IntakeIn inTake = new IntakeIn(intakeShooter);
   private final IntakeOut shoot = new IntakeOut(intakeShooter);
   private final climbDown climb_p = new climbDown(climb);

@@ -33,10 +33,11 @@ public class Arm extends SubsystemBase{
     private AbsoluteEncoder armEncoder;
     private final PIDController pidController;
 
+    private static final double offset = 0.0;
     private static final double ARM_SPEED = 0.5;
     private static final double MOVE_TIME = 1.5;
-    private static final double BOTTOM_LIMIT = 0.0;
-    private static final double TOP_LIMIT = 0.615;
+    private static final double BOTTOM_LIMIT = 0.0 - offset;
+    private static final double TOP_LIMIT = 0.615 - offset;
     private static final boolean test_boolean = true;
 
 public Arm(){
@@ -102,7 +103,7 @@ public double getMeasurement() {
  public void periodic(){
     // double num = armEncoder.getPositionConversionFactor();
     double num = armEncoder.getPosition();
-    // System.out.println(num);
+    // System.out.println("Offset " + num);
  }
     
 

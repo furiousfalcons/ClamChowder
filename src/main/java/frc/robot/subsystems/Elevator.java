@@ -30,7 +30,8 @@ public class Elevator extends SubsystemBase{
     public int i = 0;
     public boolean isUp;
     public boolean isDown;
-    public final double minPosition = 0.2;
+    private static final double offset = 0.0;
+    public final double minPosition = 0.2 ;
     public final double maxPosition = 6.0; //Diff: 6.43
 
     public Elevator(){
@@ -118,7 +119,7 @@ public class Elevator extends SubsystemBase{
 
     @Override
     public void periodic(){
-        // System.out.println(Math.abs(relativeEncoder.getPosition()) + "  " + (pidController.getSetpoint() >= relativeEncoder.getPosition()));
+        System.out.println(Math.abs(relativeEncoder.getPosition()) + "  Offset");
     }
     
     public void update() {
