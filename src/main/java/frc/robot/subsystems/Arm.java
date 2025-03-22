@@ -79,7 +79,7 @@ public class Arm extends SubsystemBase{
 
     @Override
     public void periodic() {
-    Logger.recordOutput("Current Position", getPosition());
+    Logger.recordOutput("Arm Position", getPosition());
     
     double pidMotorSpeed =
     pidController.calculate(getPosition(), targetPosition)

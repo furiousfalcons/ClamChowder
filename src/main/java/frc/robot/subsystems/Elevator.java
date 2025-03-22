@@ -59,7 +59,7 @@ public class Elevator extends SubsystemBase{
             pidController.calculate(getPosition(), targetPosition)
                 + feedForward.calculate(targetPosition, 0);
             Logger.recordOutput("PID Speed", pidMotorSpeed);
-            Logger.recordOutput("Manual Speed" , targetSpeed);
+            Logger.recordOutput("Elevator Speed" , targetSpeed);
 
             setMotor(
                 MathUtil.clamp(
