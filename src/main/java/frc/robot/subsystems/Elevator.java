@@ -120,6 +120,7 @@ public class Elevator extends SubsystemBase{
     @Override
     public void periodic(){
         System.out.println(Math.abs(relativeEncoder.getPosition()) + "  Offset");
+        
     }
     
     public void update() {

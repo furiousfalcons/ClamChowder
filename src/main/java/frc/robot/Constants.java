@@ -10,6 +10,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.RobotBase;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -30,8 +31,8 @@ public final class Constants {
   public static final int ELEVATOR_MOTOR_ID =11;
   public static final int armMotorL = 9;
   
-  public static final double inTakeMotorSpeed = .50; 
-  public static final double shootMotorSpeed = .50;
+  public static final double inTakeMotorSpeed = .25; 
+  public static final double shootMotorSpeed = .25;
 
   public static final int armEncoder = 0;
 
@@ -67,7 +68,7 @@ public final class Constants {
 
     public static final int kFrontLeftTurningCanId = 12;
     public static final int kRearLeftTurningCanId = 3;
-    public static final int kFrontRightTurningCanId = 5;  
+    public static final int kFrontRightTurningCanId = 5;
     public static final int kRearRightTurningCanId = 7;
 
     // public static final int 
@@ -147,4 +148,18 @@ public final class Constants {
   public static final class NeoMotorConstants {
     public static final double kFreeSpeedRpm = 5676;
   }
+
+    public static final Mode simMode = Mode.SIM;
+  public static final Mode currentMode = RobotBase.isReal() ? Mode.REAL : simMode;
+
+  public static enum Mode {
+    /** Running on a real robot. */
+    REAL,
+
+    /** Running a physics simulator. */
+    SIM,
+
+    /** Replaying from a log file. */
+    REPLAY
+}
 }
